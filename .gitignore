@@ -1,0 +1,14 @@
+# Virtual environment
+venv
+
+# iCLoud files
+*.DS_Store
+
+*.png
+*.json
+bin/
+include/
+lib/
+src/task/bin/
+src/task/include/
+src/task/lib/

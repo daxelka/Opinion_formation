@@ -1,5 +1,6 @@
 # Virtual environment
 venv
+macbook_venv
 
 # iCLoud files
 *.DS_Store
@@ -12,3 +13,7 @@ lib/
 src/task/bin/
 src/task/include/
 src/task/lib/
+
+# Pycharm files
+.idea/modules.xml
+.idea/riderModule.iml

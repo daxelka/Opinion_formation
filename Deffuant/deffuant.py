@@ -3,6 +3,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
 import random
+import time
 from time import perf_counter
 
 
@@ -19,9 +20,9 @@ class DeffuantModel:
         self.CLUSTER_PRECISION = 0.05  # difference in neighbouring opinions belonging to the same cluster
         self.CLUSTER_MAX_LENGTH = 0.2
         # convergence parameters
-        self.MAXIMUM_STEPS = 100000
-        self.STEPS_MONITORED = 100
-        self.IDLE_STEPS = 90
+        self.MAXIMUM_STEPS = 1000000
+        # self.STEPS_MONITORED = 100
+        self.IDLE_STEPS = 100
 
     def formation(self, node1, node2):
         """
@@ -39,10 +40,11 @@ class DeffuantModel:
             return False
 
     def opinion_formation(self):
-        counter = 0
-        loop = 1
+        n_idle_steps = 0
         total_steps = 0
         not_convergence = True
+        idle_continuous_steps = True
+
         while not_convergence:
             # G.edges returns a tuple with two node numbers
             edge = random.choice(self.edges)
@@ -52,45 +54,54 @@ class DeffuantModel:
                 node1, node2 = edge
                 self.G.nodes[node1]['opinion'] = value
                 self.G.nodes[node2]['opinion'] = value
+                idle_continuous_steps = False
             elif value == 0:
-                counter += 1
-            # else:
-            #     # remove edge
-            #     self.G.remove_edge(*edge)
+                if idle_continuous_steps:  # check if the previous steps were idle too
+                    n_idle_steps += 1
+                else:
+                    idle_continuous_steps = True
+                    n_idle_steps = 0
+
             total_steps += 1
-            loop, counter, not_convergence = self.is_not_convergence(loop, counter, total_steps)
+            not_convergence = self.is_not_convergence(n_idle_steps, total_steps)
         return self.G
 
-    def is_not_convergence(self, loop, counter, total_steps):
-        if total_steps < self.MAXIMUM_STEPS:
-            if loop == self.STEPS_MONITORED:
-                if counter >= self.IDLE_STEPS:
-                    print('model has converged')
-                    print('steps performed:', str(total_steps))
-                    return 1, 1, False
-                else:
-                    return 1, 0, True
-            else:
-                loop += 1
-                return loop, counter, True
-        else:
-            print('model is not converging')
-            return loop, counter, False
 
-    def clusters_detector(self):
+    def is_not_convergence(self, n_idle_steps, total_steps):
+        if total_steps < self.MAXIMUM_STEPS:
+            if n_idle_steps >= self.IDLE_STEPS:
+                _, means = model.clusters_detector(model.get_opinion())
+                if np.all(np.diff(means) > self.confidence):
+                    print(np.all(np.diff(means) > self.confidence))
+                    print('model has converged, steps performed:', str(total_steps))
+                    return False
+                else:
+                    return True
+            else:
+                return True
+        else:
+            print('model not converging, maximum steps performed:', str(total_steps))
+            return False
+
+    def clusters_detector(self, opinion):
         clusters = []
-        points_sorted = sorted(self.get_opinion())
+        means = []
+        points_sorted = sorted(opinion)
         curr_point = points_sorted[0]
         curr_cluster = [curr_point]
         for point in points_sorted[1:]:
             if point <= curr_point + self.CLUSTER_PRECISION:
                 curr_cluster.append(point)
             else:
+                # append new cluster to clusters
                 clusters.append(curr_cluster)
+                means.append(np.mean(curr_cluster))
+                # start new cluster
                 curr_cluster = [point]
             curr_point = point
         clusters.append(curr_cluster)
-        return clusters
+        means.append(np.mean(curr_cluster))
+        return clusters,  means
 
 
     def show_opinion_distribution(self, opinions):
@@ -113,7 +124,7 @@ class DeffuantModel:
 
 
 # Initiating a graph
-N_nodes: int = 100
+N_nodes: int = 5000
 G = nx.complete_graph(N_nodes)
 # G = nx.empty_graph(N_nodes)
 
@@ -154,18 +165,21 @@ def multimodal_normal_opinion(N_nodes, sigma):
         opinion += rng.normal(mu, sigma, N_nodes)
     return opinion
 
-
+t0 = time.time()
 # Setting initial opinion
 initial_opinion = uniform_opinion(N_nodes)
-# initial_opinion = normal_opinion(N_nodes, 0.5, 0.1)
 model.show_opinion_distribution(initial_opinion)
 
 # Set initial opinion
 model.set_opinion(initial_opinion)
 # Run the model
 model.opinion_formation()
-print('Number of clusters:', len(model.clusters_detector()))
-# Get final opinion
+t1 = time.time()
+print('performance time:', t1-t0)
+# Clusters in final opinion
+clusters, means = model.clusters_detector(model.get_opinion())
+print('Means of clusters:', means)
+# Show opinion distribution
 model.show_opinion_distribution(model.get_opinion())
 
 # sigmas = [0.5]

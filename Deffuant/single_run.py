@@ -24,9 +24,9 @@ model.opinion_formation()
 t1 = time.time()
 print('performance time:', t1 - t0)
 
-# Clusters in final opinion
-clusters, means = model.clusters_detector(model.get_opinion())
-print('Means of clusters:', means)
+# # Clusters in final opinion
+# clusters, means = model.clusters_detector(model.get_opinion())
+# print('Means of clusters:', means)
 
 # Show opinion distribution
 model.show_opinion_distribution(model.get_opinion())

@@ -14,8 +14,8 @@ class DeffuantModel:
         self.cautiousness = cautiousness  # convergence parameter, restricted to interval (0, 0.5]
         self.PRECISION = 0.01  # difference between opinions that are considered identical
         # clusters parameters
-        self.CLUSTER_PRECISION = 0.05  # difference in neighbouring opinions belonging to the same cluster
-        self.CLUSTER_MAX_LENGTH = 0.2
+        self.CLUSTER_PRECISION = 0.02  # difference in neighbouring opinions belonging to the same cluster
+        self.CLUSTER_MAX_LENGTH = 0.1
         # convergence parameters
         self.MAXIMUM_STEPS = 1000000
         # self.STEPS_MONITORED = 100
@@ -68,8 +68,8 @@ class DeffuantModel:
             if n_idle_steps >= self.IDLE_STEPS:
                 _, means = self.clusters_detector(self.get_opinion())
                 if np.all(np.diff(means) > self.confidence):
-                    print(np.all(np.diff(means) > self.confidence))
-                    print('model has converged, steps performed:', str(total_steps))
+                    # print('model has converged, steps performed:', str(total_steps))
+                    # print('Means of clusters:', means)
                     return False, n_idle_steps  # model converged, opinion formation stops
                 else:
                     return True, 0  # not converged, and restart idle steps counter

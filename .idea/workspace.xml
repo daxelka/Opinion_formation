@@ -95,6 +95,9 @@
       <module name="ba_formation" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Deffuant" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -155,6 +158,9 @@
       <module name="ba_formation" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
       <option name="IS_MODULE_SDK" value="false" />
@@ -197,6 +203,8 @@
       <workItem from="1630348749142" duration="2136000" />
       <workItem from="1630408585169" duration="2084000" />
       <workItem from="1630412738483" duration="271000" />
+      <workItem from="1630521174199" duration="567000" />
+      <workItem from="1630522083574" duration="1333000" />
     </task>
     <servers />
   </component>

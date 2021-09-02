@@ -1,10 +1,7 @@
-import math
 import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
 import random
-import time
-from time import perf_counter
 
 
 class DeffuantModel:
@@ -69,7 +66,7 @@ class DeffuantModel:
     def is_not_convergence(self, n_idle_steps, total_steps):
         if total_steps < self.MAXIMUM_STEPS:
             if n_idle_steps >= self.IDLE_STEPS:
-                _, means = model.clusters_detector(model.get_opinion())
+                _, means = self.clusters_detector(self.get_opinion())
                 if np.all(np.diff(means) > self.confidence):
                     print(np.all(np.diff(means) > self.confidence))
                     print('model has converged, steps performed:', str(total_steps))
@@ -111,84 +108,8 @@ class DeffuantModel:
 
     def set_opinion(self, opinion_array):
         d = dict(enumerate(opinion_array))  # transforming numpy.array into dictionary
-        nx.set_node_attributes(G, d, 'opinion')
+        nx.set_node_attributes(self.G, d, 'opinion')
 
     def get_opinion(self):
         opinions = np.array(list(nx.get_node_attributes(self.G, 'opinion').values()))
         return opinions
-
-
-# Initiating a graph
-N_nodes: int = 1000
-G = nx.complete_graph(N_nodes)
-# G = nx.empty_graph(N_nodes)
-
-# Initiating a model on the graph
-model = DeffuantModel(G, 0.4, 0.5)
-
-
-def random_opinion(N_nodes):
-    rng = np.random.default_rng()
-    opinion_distribution = rng.random((N_nodes,))
-    return opinion_distribution
-
-
-def uniform_opinion(N_nodes):
-    rng = np.random.default_rng()
-    opinion = rng.uniform(0.0, 1.0, (N_nodes,))
-    return opinion
-
-
-def sin_opinion(N_nodes):
-    # randomly chosen N_nodes numbers from [0,1) from uniform distribution
-    rng = np.random.default_rng()
-    values = rng.uniform(0.0, 1.0, (N_nodes,))
-    m = 1
-    # opinion_distribution = values + m * np.sin(2*math.pi/k * np.linspace(0, 1, N_nodes, endpoint=False))
-    opinion = m * np.arccos(np.linspace(-1, 1, N_nodes)) / math.pi
-    return opinion
-
-
-def normal_opinion(N_nodes, mu, sigma):
-    rng = np.random.default_rng()
-    opinion = rng.normal(mu, sigma, N_nodes)
-    return opinion
-
-
-def multimodal_normal_opinion(N_nodes, sigma):
-    rng = np.random.default_rng()
-    mus = [.25, .75]
-    opinion = np.zeros(N_nodes)
-    for mu in mus:
-        opinion += rng.normal(mu, sigma, N_nodes)
-    return opinion
-
-
-t0 = time.time()
-# Setting initial opinion
-initial_opinion = uniform_opinion(N_nodes)
-model.show_opinion_distribution(initial_opinion)
-
-# Set initial opinion
-model.set_opinion(initial_opinion)
-# Run the model
-model.opinion_formation()
-t1 = time.time()
-print('performance time:', t1 - t0)
-# Clusters in final opinion
-clusters, means = model.clusters_detector(model.get_opinion())
-print('Means of clusters:', means)
-# Show opinion distribution
-model.show_opinion_distribution(model.get_opinion())
-
-# sigmas = [0.5]
-# for sigma in sigmas:  # iteration through the family of initial opinions
-#     for i in range(1):  # iteration through realisations of opinion distribution
-#         initial_opinion = normal_opinion(N_nodes, 0.5, sigma)
-#         initial_opinion = multimodal_normal_opinion(N_nodes, sigma, 2)
-#         # Set initial opinion
-#         model.set_opinion(initial_opinion)
-#         # Run the model
-#         model.opinion_formation()
-#         # Get final opinion
-#         model.show_opinion_distribution(model.get_opinion())

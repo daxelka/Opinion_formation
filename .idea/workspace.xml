@@ -4,6 +4,7 @@
     <list default="true" id="0d28bbef-7e0d-4d59-b5f9-a075f6d9e215" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Deffuant/deffuant.py" beforeDir="false" afterPath="$PROJECT_DIR$/Deffuant/deffuant.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Deffuant/single_run.py" beforeDir="false" afterPath="$PROJECT_DIR$/Deffuant/single_run.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +52,7 @@
       <recent name="$PROJECT_DIR$/Deffuant" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.single_run">
+  <component name="RunManager" selected="Python.biffurcation_diagram_runner">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="ba_formation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -74,20 +75,17 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="ba_formation" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="biffurcation_diagram_runner" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="ba_formation" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Deffuant" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/ba_formation.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Deffuant/biffurcation_diagram_runner.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -180,11 +178,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.biffurcation_diagram_runner" />
         <item itemvalue="Python.single_run" />
         <item itemvalue="Python.deffuant" />
         <item itemvalue="Python.scratch_2" />
         <item itemvalue="Python.clusters_detector" />
-        <item itemvalue="Python.ba_formation" />
       </list>
     </recent_temporary>
   </component>
@@ -206,7 +204,7 @@
       <workItem from="1630408585169" duration="2084000" />
       <workItem from="1630412738483" duration="271000" />
       <workItem from="1630521174199" duration="567000" />
-      <workItem from="1630522083574" duration="4151000" />
+      <workItem from="1630522083574" duration="8823000" />
     </task>
     <servers />
   </component>

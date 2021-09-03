@@ -2,6 +2,7 @@ import networkx as nx
 import time
 from deffuant import DeffuantModel
 from distribution_tools import uniform_opinion
+import numpy as np
 
 # Initiating a graph
 N_nodes: int = 1000
@@ -23,6 +24,12 @@ model.set_opinion(initial_opinion)
 model.opinion_formation()
 t1 = time.time()
 print('performance time:', t1 - t0)
+
+clusters, means = model.clusters_detector(model.get_opinion())
+densities = model.cluster_density(clusters)
+print(densities)
+np.array(means)[np.array(densities)>0.1]
+# list(i >= 0.1 for i in model.cluster_density(clusters))
 
 # # Clusters in final opinion
 # clusters, means = model.clusters_detector(model.get_opinion())

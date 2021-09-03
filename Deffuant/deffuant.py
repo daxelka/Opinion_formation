@@ -8,6 +8,7 @@ class DeffuantModel:
     def __init__(self, G, confidence_interval, cautiousness):
         # graph parameters
         self.G = G
+        self.N_nodes = len(G)
         self.edges = list(self.G.edges(data=False))
         # Deffuant parameters
         self.confidence = confidence_interval  # restricted to interval (0, 0.5]
@@ -17,8 +18,7 @@ class DeffuantModel:
         self.CLUSTER_PRECISION = 0.02  # difference in neighbouring opinions belonging to the same cluster
         self.CLUSTER_MAX_LENGTH = 0.1
         # convergence parameters
-        self.MAXIMUM_STEPS = 1000000
-        # self.STEPS_MONITORED = 100
+        self.MAXIMUM_STEPS = 5000000
         self.IDLE_STEPS = 100
 
     def formation(self, node1, node2):
@@ -72,9 +72,9 @@ class DeffuantModel:
                     # print('Means of clusters:', means)
                     return False, n_idle_steps  # model converged, opinion formation stops
                 else:
-                    return True, 0  # not converged, and restart idle steps counter
+                    return True, 0  # not converged, restart idle steps counter
             else:
-                return True, n_idle_steps  # not converged, continue counting idle steps
+                return True, n_idle_steps  # not converged, keep counting idle steps
         else:
             print('model not converging, maximum steps performed:', str(total_steps))
             return False, n_idle_steps  # not converged, opinion formation stops
@@ -98,6 +98,13 @@ class DeffuantModel:
         clusters.append(curr_cluster)
         means.append(np.mean(curr_cluster))
         return clusters, means
+
+    def cluster_density(self, clusters):
+        density = []
+        for cluster in clusters:
+            density.append(len(cluster)/self.N_nodes)
+        return density
+
 
     def show_opinion_distribution(self, opinions):
         bins = [0.01 * n for n in range(100)]

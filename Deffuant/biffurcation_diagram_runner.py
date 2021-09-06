@@ -30,7 +30,7 @@ def run(parameter, initial_value):
     return major_groups
 
 # Graph Inisialisation
-N_nodes: int = 1000
+N_nodes: int = 100
 G = nx.complete_graph(N_nodes)
 
 t0 = time.time()
@@ -40,4 +40,5 @@ x_var, y_var = generator.run()
 t1 = time.time()
 print("performance time", t1-t0)
 
-BifurcationDiagramPlotter().plot(x_var, y_var)
+BifurcationDiagramPlotter().plot(x_var, y_var, 'confidence bound', 'opinion')
+

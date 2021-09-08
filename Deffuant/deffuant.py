@@ -26,8 +26,7 @@ class DeffuantModel:
         value2 = self.G.nodes[node2]['opinion']
         diff = abs(value1 - value2)
         if diff < self.confidence and diff > self.PRECISION:
-            value = (value1 + value2) * self.cautiousness
-            return value
+            return diff
         elif diff < self.PRECISION:
             return 0
         else:
@@ -46,8 +45,10 @@ class DeffuantModel:
             value = self.formation(*edge)
             if value > 0:
                 node1, node2 = edge
-                self.G.nodes[node1]['opinion'] = value
-                self.G.nodes[node2]['opinion'] = value
+                value1 = self.G.nodes[node1]['opinion']
+                value2 = self.G.nodes[node2]['opinion']
+                self.G.nodes[node1]['opinion'] = value1 + self.cautiousness * (value1- value2)
+                self.G.nodes[node2]['opinion'] = value2 + self.cautiousness * (value2- value1)
                 idle_continuous_steps = False
             elif value == 0:
                 if idle_continuous_steps:  # check if the previous steps were idle too

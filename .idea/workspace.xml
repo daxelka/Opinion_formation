@@ -3,10 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0d28bbef-7e0d-4d59-b5f9-a075f6d9e215" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Deffuant/biffurcation_diagram_runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Deffuant/biffurcation_diagram_runner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Deffuant/deffuant.py" beforeDir="false" afterPath="$PROJECT_DIR$/Deffuant/deffuant.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Deffuant/distribution_tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/Deffuant/distribution_tools.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Deffuant/single_run.py" beforeDir="false" afterPath="$PROJECT_DIR$/Deffuant/single_run.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -223,7 +220,7 @@
       <workItem from="1630412738483" duration="271000" />
       <workItem from="1630521174199" duration="567000" />
       <workItem from="1630522083574" duration="33684000" />
-      <workItem from="1631095095523" duration="1309000" />
+      <workItem from="1631095095523" duration="2777000" />
     </task>
     <servers />
   </component>

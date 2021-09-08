@@ -43,7 +43,7 @@ def run(parameter, initial_value):
     return major_groups
 
 # Graph Inisialisation
-N_nodes: int = 1000
+N_nodes: int = 100
 G = nx.complete_graph(N_nodes)
 
 t0 = time.time()

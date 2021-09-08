@@ -2,19 +2,21 @@ import networkx as nx
 import time
 from deffuant import DeffuantModel
 from distribution_tools import normal_opinion
+from distribution_tools import uniform_opinion
 import numpy as np
 
 # Initiating a graph
-N_nodes: int = 1000
+N_nodes: int = 100
 G = nx.complete_graph(N_nodes)
 # G = nx.empty_graph(N_nodes)
 
 # Initiating a Deffuant model on the graph
-model = DeffuantModel(G, 0.2, 0.5)
+model = DeffuantModel(G, 0.5, 0.5)
 
 t0 = time.time()
 # Setting initial opinion
-initial_opinion = normal_opinion(N_nodes, 0.1, 1, 0, 1)
+# initial_opinion = normal_opinion(N_nodes, 0.1, 1, 0, 1)
+initial_opinion = uniform_opinion(N_nodes)
 model.show_opinion_distribution(initial_opinion)
 
 # Set initial opinion

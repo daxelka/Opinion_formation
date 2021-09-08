@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="0d28bbef-7e0d-4d59-b5f9-a075f6d9e215" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Deffuant/deffuant.py" beforeDir="false" afterPath="$PROJECT_DIR$/Deffuant/deffuant.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +60,7 @@
       <recent name="$PROJECT_DIR$/Deffuant" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.biffurcation_diagram_runner">
+  <component name="RunManager" selected="Python.single_run">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="ba_formation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -173,9 +172,6 @@
       <module name="ba_formation" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Deffuant" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -193,8 +189,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.biffurcation_diagram_runner" />
         <item itemvalue="Python.single_run" />
+        <item itemvalue="Python.biffurcation_diagram_runner" />
         <item itemvalue="Python.distribution_tools" />
         <item itemvalue="Python.deffuant" />
         <item itemvalue="Python.scratch_2" />
@@ -220,7 +216,7 @@
       <workItem from="1630412738483" duration="271000" />
       <workItem from="1630521174199" duration="567000" />
       <workItem from="1630522083574" duration="33684000" />
-      <workItem from="1631095095523" duration="2777000" />
+      <workItem from="1631095095523" duration="4123000" />
     </task>
     <servers />
   </component>

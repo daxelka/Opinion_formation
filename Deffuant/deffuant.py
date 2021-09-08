@@ -22,9 +22,6 @@ class DeffuantModel:
         self.IDLE_STEPS = 100
 
     def formation(self, node1, node2):
-        """
-        value = (node1.value + node2.value) * self.persuasibility
-        """
         value1 = self.G.nodes[node1]['opinion']
         value2 = self.G.nodes[node2]['opinion']
         diff = abs(value1 - value2)

@@ -4,6 +4,9 @@
     <list default="true" id="0d28bbef-7e0d-4d59-b5f9-a075f6d9e215" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Deffuant/biffurcation_diagram_runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Deffuant/biffurcation_diagram_runner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Deffuant/deffuant.py" beforeDir="false" afterPath="$PROJECT_DIR$/Deffuant/deffuant.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Deffuant/distribution_tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/Deffuant/distribution_tools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Deffuant/single_run.py" beforeDir="false" afterPath="$PROJECT_DIR$/Deffuant/single_run.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,6 +30,16 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Deffuant/clusters_detector.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/Deffuant/single_run.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/Deffuant/biffurcation_diagram_runner.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/Deffuant/distribution_tools.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../../utils/bifurcation_diagram/generator.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../../utils/bifurcation_diagram/plotter.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/Deffuant/deffuant.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_2.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="1wufoCc7iE1Em9XMuDmhwIlGQsF" />
   <component name="ProjectLevelVcsManager">
@@ -93,7 +106,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="clusters_detector" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="deffuant" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="ba_formation" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -106,7 +119,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Deffuant/clusters_detector.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Deffuant/deffuant.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -115,17 +128,20 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="deffuant" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="distribution_tools" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="ba_formation" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Deffuant" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Deffuant/deffuant.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Deffuant/distribution_tools.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -160,6 +176,9 @@
       <module name="ba_formation" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Deffuant" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -179,9 +198,9 @@
       <list>
         <item itemvalue="Python.biffurcation_diagram_runner" />
         <item itemvalue="Python.single_run" />
+        <item itemvalue="Python.distribution_tools" />
         <item itemvalue="Python.deffuant" />
         <item itemvalue="Python.scratch_2" />
-        <item itemvalue="Python.clusters_detector" />
       </list>
     </recent_temporary>
   </component>
@@ -203,7 +222,8 @@
       <workItem from="1630408585169" duration="2084000" />
       <workItem from="1630412738483" duration="271000" />
       <workItem from="1630521174199" duration="567000" />
-      <workItem from="1630522083574" duration="20258000" />
+      <workItem from="1630522083574" duration="33684000" />
+      <workItem from="1631095095523" duration="1309000" />
     </task>
     <servers />
   </component>

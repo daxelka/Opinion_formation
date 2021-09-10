@@ -6,7 +6,7 @@ from distribution_tools import uniform_opinion
 import numpy as np
 
 # Initiating a graph
-N_nodes: int = 100
+N_nodes: int = 1000
 G = nx.complete_graph(N_nodes)
 # G = nx.empty_graph(N_nodes)
 

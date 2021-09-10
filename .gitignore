@@ -21,6 +21,7 @@ src/task/lib/
 .idea/workspace.xml
 
 # Byte-compiled / optimized / DLL files
+Deffuant/__pycache__/
 __pycache__/
 *.py[cod]
 *$py.class

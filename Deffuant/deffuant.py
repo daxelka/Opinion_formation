@@ -47,8 +47,8 @@ class DeffuantModel:
                 node1, node2 = edge
                 value1 = self.G.nodes[node1]['opinion']
                 value2 = self.G.nodes[node2]['opinion']
-                self.G.nodes[node1]['opinion'] = value1 + self.cautiousness * (value1- value2)
-                self.G.nodes[node2]['opinion'] = value2 + self.cautiousness * (value2- value1)
+                self.G.nodes[node1]['opinion'] = value1 + self.cautiousness * (value2- value1)
+                self.G.nodes[node2]['opinion'] = value2 + self.cautiousness * (value1- value2)
                 idle_continuous_steps = False
             elif value == 0:
                 if idle_continuous_steps:  # check if the previous steps were idle too
@@ -109,7 +109,6 @@ class DeffuantModel:
         plt.hist(opinions, bins=bins)
         plt.title("Histogram of opinions")
         plt.show()
-        # plt.savefig('result2.png')
 
     def set_opinion(self, opinion_array):
         d = dict(enumerate(opinion_array))  # transforming numpy.array into dictionary

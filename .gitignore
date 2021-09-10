@@ -17,3 +17,4 @@ src/task/lib/
 # Pycharm files
 .idea/modules.xml
 .idea/riderModule.iml
+.idea/workspace.xml

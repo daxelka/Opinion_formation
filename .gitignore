@@ -15,6 +15,7 @@ src/task/include/
 src/task/lib/
 
 # Pycharm files
+.idea
 .idea/modules.xml
 .idea/riderModule.iml
 .idea/workspace.xml

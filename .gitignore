@@ -18,3 +18,8 @@ src/task/lib/
 .idea/modules.xml
 .idea/riderModule.iml
 .idea/workspace.xml
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class

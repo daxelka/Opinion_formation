@@ -8,10 +8,18 @@ from utils.libs import drange
 from deffuant import DeffuantModel
 from distribution_tools import normal_opinion
 from distribution_tools import uniform_opinion
+from distribution_tools import inverse_transform_sampling
 
 
 def parameter_iterator():
     return drange(0.1, 0.5, 0.01)
+
+def gen_pdf(n_peaks, epsilon):
+    def pdf(x):
+        f = np.ones(x.shape) + epsilon * np.cos((2*n_peaks-1)*np.pi*x)
+        f / np.trapz(f, x)
+        return f
+    return pdf
 
 def initial_values_iterator():
     initial_opinions = []
@@ -23,9 +31,13 @@ def initial_values_iterator():
     # for sigma in drange(0.1, 0.9, 0.05):
     #         distribution = normal_opinion(N_nodes, 0.5, sigma, 0, 1)
     #         initial_opinions.append(distribution)
-    for sigma in range(10):
-            distribution = uniform_opinion(N_nodes)
-            initial_opinions.append(distribution)
+    # for sigma in range(10):
+    #         distribution = uniform_opinion(N_nodes)
+    #         initial_opinions.append(distribution)
+    for n_nodes in range(10):
+        pdf = gen_pdf(n_nodes, 0.5)
+        distribution = inverse_transform_sampling(pdf, N_nodes, (0, 1))
+        initial_opinions.append(distribution)
 
     return initial_opinions
 

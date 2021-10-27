@@ -1,6 +1,8 @@
 import numpy as np
+from numpy.random import random
 import scipy.stats as stats
 import scipy.optimize
+from scipy import interpolate
 
 
 def random_opinion(n_nodes):
@@ -15,14 +17,32 @@ def uniform_opinion(n_nodes):
     return opinion
 
 
-# def sin_opinion(n_nodes):
-#     # randomly chosen N_nodes numbers from [0,1) from uniform distribution
-#     rng = np.random.default_rng()
-#     values = rng.uniform(0.0, 1.0, (n_nodes,))
-#     m = 1
-#     # opinion_distribution = values + m * np.sin(2*math.pi/k * np.linspace(0, 1, N_nodes, endpoint=False))
-#     opinion = m * np.arccos(np.linspace(-1, 1, n_nodes)) / math.pi
-#     return opinion
+def inverse_transform_sampling(pdf, N=1000000, x_limits=(0, 1)):
+    """ Sampling of a random variable from a user specified probability density function by inverse transform sampling.
+
+    Args:
+        pdf:
+            probability density function. Must take a single argument, x, in form of np.array, and return np.array.
+        N:
+            number of samples. integer
+        x_limits:
+            boundaries of truncated pdf. tuple (x_lower, x_upper)
+
+    Returns: N random variables sampled from given truncated pdf. np.array of size N
+
+    """
+    x_lower, x_upper = x_limits
+    x = np.linspace(x_lower, x_upper, int(N))
+    y = pdf(x)  # probability density function, pdf
+    cdf_y = np.cumsum(y)  # cumulative distribution function
+    cdf_y = cdf_y / cdf_y.max()  # normalization of cdf
+    inverse_cdf = interpolate.interp1d(cdf_y, x, fill_value="extrapolate")  # this is a function
+
+    # Generates samples from given pdf
+    uniform_samples = random(int(N))
+    required_samples = inverse_cdf(uniform_samples)
+    return required_samples
+
 
 
 def normal_opinion(n_nodes, mu, sigma, lower_bound, upper_bound):

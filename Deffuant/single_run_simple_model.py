@@ -1,23 +1,14 @@
 import networkx as nx
 import time
-from deffuant import DeffuantModel
+from deffuant_simple import DeffuantModelSimple
 from distribution_tools import normal_opinion
 from distribution_tools import uniform_opinion
 from distribution_tools import inverse_transform_sampling
 import numpy as np
 
-# Initiating a graph
-N_nodes: int = 10000
-G = nx.complete_graph(N_nodes)
-# G = nx.empty_graph(N_nodes)
+# Initiating a opinions
+N_nodes: int = 1000
 
-# Initiating a Deffuant model on the graph
-t0 = time.perf_counter()
-model = DeffuantModel(G, 0.5, 0.5)
-
-# Setting initial opinion
-# initial_opinion = normal_opinion(N_nodes, 0.1, 1, 0, 1)
-# initial_opinion = uniform_opinion(N_nodes)
 def gen_pdf(n_peaks, epsilon):
     def pdf(x):
         f = np.ones(x.shape) + epsilon * np.cos((2*n_peaks-1)*np.pi*x)
@@ -25,12 +16,13 @@ def gen_pdf(n_peaks, epsilon):
         return f
     return pdf
 
+t0 = time.perf_counter()
 pdf = gen_pdf(3, 0.1)
 initial_opinion = inverse_transform_sampling(pdf, N_nodes, (0, 1))
-model.show_opinion_distribution(initial_opinion)
 
 # Set initial opinion
-model.set_opinion(initial_opinion)
+model = DeffuantModelSimple(initial_opinion, 0.5, 0.5)
+model.show_opinion_distribution(initial_opinion)
 
 # Run the model
 model.opinion_formation()

@@ -52,6 +52,7 @@ def run(parameter, initial_value):
     model = DeffuantModelSimple(N_nodes, confidence_bound, cautiousness)
     model.set_opinion(initial_value)
     model.opinion_formation()
+    # if model converged to return opinion if not to return []
     clusters, means = model.clusters_detector(model.get_opinion())
     # Filter by cluster density
     densities = model.cluster_density(clusters)
@@ -62,17 +63,17 @@ def run(parameter, initial_value):
 
 t0 = time.time()
 # Graph Inisialisation
-N_nodes: int = 1000
+N_nodes: int = 10000
 # G = nx.complete_graph(N_nodes)
 
 # Generating the set of initial distributions
 initial_opinions = []
+n_peaks = 2
 
-for n_nodes in range(4):
-    for i in range(10):
-        pdf = gen_pdf(n_nodes, 0.5)
-        distribution = inverse_transform_sampling(pdf, N_nodes, (0, 1))
-        initial_opinions.append(distribution)
+for k in range(30):
+    pdf = gen_pdf(n_peaks, 0.5)
+    distribution = inverse_transform_sampling(pdf, N_nodes, (0, 1))
+    initial_opinions.append(distribution)
 
 generator = BifurcationDiagramGenerator(parameter_iterator, initial_values_iterator, run)
 
@@ -84,5 +85,5 @@ print("performance time", t1-t0)
 y = (np.array(y_var) - 0.5)/np.array(x_var)
 x = 0.5/np.array(x_var)
 
-BifurcationDiagramPlotter().plot(x_var, y_var, 'confidence bound', 'opinion')
-# BifurcationDiagramPlotter().plot(x, y, 'confidence bound', 'opinion', y_limits = (-5,5))
+# BifurcationDiagramPlotter().plot(x_var, y_var, 'confidence bound', 'opinion')
+BifurcationDiagramPlotter().plot(x, y, 'confidence bound', 'opinion', y_limits = (-5,5))

@@ -1,5 +1,7 @@
 import networkx as nx
 import numpy as np
+import math
+import json
 import time
 import pickle
 from utils.bifurcation_diagram.generator import BifurcationDiagramGenerator
@@ -11,9 +13,14 @@ from distribution_tools import uniform_opinion
 from distribution_tools import inverse_transform_sampling
 
 
+lower_bound = 1
+upper_bound = 5
+step = 0.01
+# size = math.ceil((upper_bound - lower_bound)/step)
+size = 10
+
 def parameter_iterator():
-    # return drange(0.1, 0.5, 0.01)
-    deltas = np.linspace(1.0, 5.0, num=50, endpoint=True)
+    deltas = np.linspace(lower_bound, upper_bound, num=size, endpoint=True)
     return 0.5 / deltas
 
 def gen_pdf(n_peaks, epsilon):
@@ -24,27 +31,6 @@ def gen_pdf(n_peaks, epsilon):
     return pdf
 
 
-def initial_values_iterator():
-    # initial_opinions = []
-    # # for sigma in drange(0.1, 0.9, 0.1):
-    # #     for mu in drange(0.3, 0.7, 0.1):
-    # #         # distribution = uniform_opinion(N_nodes)
-    # #         distribution = normal_opinion(N_nodes, mu, sigma, 0, 1)
-    # #         initial_opinions.append(distribution)
-    # # for sigma in drange(0.1, 0.9, 0.05):
-    # #         distribution = normal_opinion(N_nodes, 0.5, sigma, 0, 1)
-    # #         initial_opinions.append(distribution)
-    # # for sigma in range(10):
-    # #         distribution = uniform_opinion(N_nodes)
-    # #         initial_opinions.append(distribution)
-    # for n_nodes in range(4):
-    #     for i in range(10):
-    #         pdf = gen_pdf(n_nodes, 0.5)
-    #         distribution = inverse_transform_sampling(pdf, N_nodes, (0, 1))
-    #         initial_opinions.append(distribution)
-    return initial_opinions
-
-
 def run(parameter, initial_value):
     confidence_bound, cautiousness = parameter, 0.5
     model = DeffuantModelSimple(N_nodes, confidence_bound, cautiousness)
@@ -52,26 +38,50 @@ def run(parameter, initial_value):
     model.opinion_formation()
     # if model converged to return opinion if not to return []
     clusters, means = model.clusters_detector(model.get_opinion())
+
     # Filter by cluster density
     densities = model.cluster_density(clusters)
     major_groups = np.array(means)[np.array(densities) > 0.1]
-    # print("means:", means, "densities:", densities, "major", major_groups)
+
+    # Writing result into data
+    results = []
+    for count, mean_value in enumerate(means):
+        density = densities[count]
+        results.append([mean_value, density])
+
+    data['experiments'].append({
+        'initial_value': initial_value.tolist(),
+        'parameter': parameter,
+        'results': results
+    })
     return major_groups
 
 
 t0 = time.time()
-# Graph Inisialisation
-N_nodes: int = 10000
-# G = nx.complete_graph(N_nodes)
+
+# Graph Initialisation
+N_nodes: int = 1000
 
 # Generating the set of initial distributions
 initial_opinions = []
 n_peaks = 2
 
-for k in range(30):
+for k in range(10):
     pdf = gen_pdf(n_peaks, 0.5)
     distribution = inverse_transform_sampling(pdf, N_nodes, (0, 1))
     initial_opinions.append(distribution)
+
+
+def initial_values_iterator():
+    return initial_opinions
+
+
+data = {'setup': {'N_nodes': N_nodes,
+                  'parameter_limits': (lower_bound, upper_bound),
+                  'step': step,
+                  'notes': 'uniform IC plus cos disturbance with 2 negative peaks and amplitude 0.5 '},
+        'experiments': [],
+        }
 
 generator = BifurcationDiagramGenerator(parameter_iterator, initial_values_iterator, run)
 
@@ -85,3 +95,9 @@ x = 0.5/np.array(x_var)
 
 # BifurcationDiagramPlotter().plot(x_var, y_var, 'confidence bound', 'opinion')
 BifurcationDiagramPlotter().plot(x, y, 'confidence bound', 'opinion', y_limits = (-5,5))
+
+# Writing to file
+with open('/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/data.txt', 'w') as outfile:
+    json.dump(data, outfile)
+
+print('json created')

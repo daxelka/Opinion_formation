@@ -8,8 +8,6 @@ class DeffuantModelSimple:
     def __init__(self, N_nodes, confidence_interval, cautiousness):
         self.N_nodes = N_nodes
         self.opinions = []
-        # self.opinions = opinions
-        # self.N_nodes = len(opinions)
         # Deffuant parameters
         self.confidence = confidence_interval  # restricted to interval (0, 0.5]
         self.cautiousness = cautiousness  # convergence parameter, restricted to interval (0, 0.5]
@@ -20,8 +18,6 @@ class DeffuantModelSimple:
         # convergence parameters
         self.MAXIMUM_STEPS = 5000000
         self.IDLE_STEPS = 100
-        # random
-        # self.rng = np.random.default_rng()
         self.node_ids = range(self.N_nodes)
 
     def formation(self, node1, node2):
@@ -43,7 +39,6 @@ class DeffuantModelSimple:
 
         while not_convergence:
             # choosing two nodes for interaction at random
-            # edge = self.rng.choice(self.node_ids, 2, replace=False)
             edge = random.sample(self.node_ids,2)
             # random edges
             value = self.formation(*edge)

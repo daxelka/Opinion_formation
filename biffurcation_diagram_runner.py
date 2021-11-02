@@ -47,8 +47,6 @@ def initial_values_iterator():
 
 def run(parameter, initial_value):
     confidence_bound, cautiousness = parameter, 0.5
-    # model = DeffuantModel(G,confidence_bound, cautiousness)
-    # model.set_opinion(initial_value)
     model = DeffuantModelSimple(N_nodes, confidence_bound, cautiousness)
     model.set_opinion(initial_value)
     model.opinion_formation()

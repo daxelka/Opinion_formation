@@ -50,7 +50,6 @@ def run(parameter, initial_value):
         results.append([mean_value, density])
 
     data['experiments'].append({
-        'initial_value': initial_value.tolist(),
         'parameter': parameter,
         'results': results
     })
@@ -60,13 +59,13 @@ def run(parameter, initial_value):
 t0 = time.time()
 
 # Graph Initialisation
-N_nodes: int = 1000
+N_nodes: int = 100
 
 # Generating the set of initial distributions
 initial_opinions = []
 n_peaks = 2
 
-for k in range(10):
+for k in range(5):
     pdf = gen_pdf(n_peaks, 0.5)
     distribution = inverse_transform_sampling(pdf, N_nodes, (0, 1))
     initial_opinions.append(distribution)
@@ -81,6 +80,7 @@ data = {'setup': {'N_nodes': N_nodes,
                   'step': step,
                   'notes': 'uniform IC plus cos disturbance with 2 negative peaks and amplitude 0.5 '},
         'experiments': [],
+        'initial_conditions': [r.tolist() for r in initial_opinions]
         }
 
 generator = BifurcationDiagramGenerator(parameter_iterator, initial_values_iterator, run)

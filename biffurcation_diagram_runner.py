@@ -16,7 +16,7 @@ lower_bound = 1
 upper_bound = 5
 step = 0.01
 # size = math.ceil((upper_bound - lower_bound)/step)
-size = 10
+size = 50
 
 def parameter_iterator():
     deltas = np.linspace(lower_bound, upper_bound, num=size, endpoint=True)
@@ -36,7 +36,10 @@ def run(parameter, initial_value):
     model.set_opinion(initial_value)
     model.opinion_formation()
     # if model converged to return opinion if not to return []
-    clusters, means = model.clusters_detector(model.get_opinion())
+    if model.get_opinion():
+        clusters, means = model.clusters_detector(model.get_opinion())
+    else:
+        return []
 
     # Filter by cluster density
     densities = model.cluster_density(clusters)
@@ -57,7 +60,7 @@ def run(parameter, initial_value):
 t0 = time.time()
 
 # Graph Initialisation
-N_nodes: int = 100
+N_nodes: int = 1000
 
 # Generating the set of initial distributions
 initial_opinions = []

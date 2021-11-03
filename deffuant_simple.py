@@ -19,6 +19,7 @@ class DeffuantModelSimple:
         self.MAXIMUM_STEPS = 5000000
         self.IDLE_STEPS = 100
         self.node_ids = range(self.N_nodes)
+        self.converged = None
 
     def formation(self, node1, node2):
         value1 = self.opinions[node1]
@@ -65,8 +66,7 @@ class DeffuantModelSimple:
             if n_idle_steps >= self.IDLE_STEPS:
                 _, means = self.clusters_detector(self.opinions)
                 if np.all(np.diff(means) > self.confidence):
-                    # print('model has converged, steps performed:', str(total_steps))
-                    # print('Means of clusters:', means)
+                    self.converged = True
                     return False, n_idle_steps  # model converged, opinion formation stops
                 else:
                     return True, 0  # not converged, restart idle steps counter
@@ -74,6 +74,7 @@ class DeffuantModelSimple:
                 return True, n_idle_steps  # not converged, keep counting idle steps
         else:
             print('model not converging, maximum steps performed:', str(total_steps))
+            self.converged = False
             return False, n_idle_steps  # not converged, opinion formation stops
 
     def clusters_detector(self, opinion):
@@ -112,5 +113,8 @@ class DeffuantModelSimple:
         self.opinions = list(opinion_array)
 
     def get_opinion(self):
-        opinions = self.opinions
+        if self.converged:
+            opinions = self.opinions
+        else:
+            opinions = []
         return opinions

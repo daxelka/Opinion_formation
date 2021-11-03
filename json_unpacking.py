@@ -2,11 +2,13 @@ import numpy as np
 import json
 from utils.bifurcation_diagram.plotter import BifurcationDiagramPlotter
 
+filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/data.txt'
+
 x = []
 y = []
 p = []
 
-with open('/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/data.txt') as json_file:
+with open(filename) as json_file:
     data = json.load(json_file)
     for parameter, results in data['experiments'].items():
         for r in results:
@@ -19,4 +21,4 @@ with open('/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/data.txt')
 y_t = (np.array(y) - 0.5)/np.array(x)
 x_t = 0.5/np.array(x)
 
-BifurcationDiagramPlotter().plot(x_t, y_t, np.array(p), 'confidence bound', 'opinion', y_limits=(-5,5))
+BifurcationDiagramPlotter().plot(x_t, y_t, 'confidence bound', 'opinion', y_limits=(-5,5), weight= np.array(p))

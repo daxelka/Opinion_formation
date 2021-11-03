@@ -11,6 +11,7 @@ p = []
 with open(filename) as json_file:
     data = json.load(json_file)
     for parameter, results in data['experiments'].items():
+
         for r in results:
             for c in r:
                 x.append(float(parameter))

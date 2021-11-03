@@ -3,7 +3,6 @@ import numpy as np
 import math
 import json
 import time
-import pickle
 from utils.bifurcation_diagram.generator import BifurcationDiagramGenerator
 from utils.bifurcation_diagram.plotter import BifurcationDiagramPlotter
 from utils.libs import drange
@@ -49,10 +48,9 @@ def run(parameter, initial_value):
         density = densities[count]
         results.append([mean_value, density])
 
-    data['experiments'].append({
-        'parameter': parameter,
-        'results': results
-    })
+    if data['experiments'].get(parameter) is None:
+        data['experiments'][parameter] = []
+    data['experiments'][parameter].append(results)
     return major_groups
 
 
@@ -79,7 +77,7 @@ data = {'setup': {'N_nodes': N_nodes,
                   'parameter_limits': (lower_bound, upper_bound),
                   'step': step,
                   'notes': 'uniform IC plus cos disturbance with 2 negative peaks and amplitude 0.5 '},
-        'experiments': [],
+        'experiments': {},
         'initial_conditions': [r.tolist() for r in initial_opinions]
         }
 

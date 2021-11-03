@@ -19,4 +19,4 @@ with open('/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/data.txt')
 y_t = (np.array(y) - 0.5)/np.array(x)
 x_t = 0.5/np.array(x)
 
-BifurcationDiagramPlotter().plot(x_t, y_t, 'confidence bound', 'opinion', y_limits=(-5,5))
+BifurcationDiagramPlotter().plot(x_t, y_t, np.array(p), 'confidence bound', 'opinion', y_limits=(-5,5))

@@ -12,11 +12,11 @@ from distribution_tools import uniform_opinion
 from distribution_tools import inverse_transform_sampling
 
 
-lower_bound = 4
+lower_bound = 1
 upper_bound = 7
-step = 0.01
-# size = math.ceil((upper_bound - lower_bound)/step)
-size = 30
+step = 0.05
+size = math.ceil((upper_bound - lower_bound)/step)
+print(size)
 
 def parameter_iterator():
     deltas = np.linspace(lower_bound, upper_bound, num=size, endpoint=True)
@@ -67,11 +67,16 @@ N_nodes: int = 100
 
 # Generating the set of initial distributions
 initial_opinions = []
-n_peaks = 2
-
-for k in range(10):
-    pdf = gen_pdf(n_peaks, 0.5)
-    distribution = inverse_transform_sampling(pdf, N_nodes, (0, 1))
+# Number of run for each parameter
+n_runs = 30
+# n_peaks = 2
+#
+# for k in range(10):
+#     pdf = gen_pdf(n_peaks, 0.5)
+#     distribution = inverse_transform_sampling(pdf, N_nodes, (0, 1))
+#     initial_opinions.append(distribution)
+for k in range(n_runs):
+    distribution = uniform_opinion(N_nodes)
     initial_opinions.append(distribution)
 
 

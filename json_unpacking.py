@@ -13,12 +13,13 @@ with open(filename) as json_file:
     for parameter, results in data['experiments'].items():
         for r in results:
             for c in r:
-                x.append(float(parameter))
-                y.append(c[0])
-                p.append(c[1])
+                if c[1] > 0.1:
+                    x.append(float(parameter))
+                    y.append(c[0])
+                    p.append(c[1])
 
 
 y_t = (np.array(y) - 0.5)/np.array(x)
 x_t = 0.5/np.array(x)
 
-BifurcationDiagramPlotter().plot(x_t, y_t, 'confidence bound', 'opinion', y_limits=(-5,5), weight= np.array(p))
+BifurcationDiagramPlotter().plot(x_t, y_t, 'confidence bound', 'opinion', y_limits=(-5,5), weight=np.array(p))

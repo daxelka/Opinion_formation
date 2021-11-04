@@ -42,15 +42,15 @@ def run(parameter, initial_value):
         # Calculate clusters densities
         densities = model.cluster_density(clusters)
         # Add results to data
-        results = []
+        result = []
         for count, mean_value in enumerate(means):
             density = densities[count]
-            results.append([mean_value, density])
+            result.append([mean_value, density])
 
     else:
         return []
 
-    return results
+    return result
 
 
 t0 = time.time()
@@ -61,7 +61,7 @@ N_nodes: int = 100
 # Generating the set of initial distributions
 initial_opinions = []
 # Number of run for each parameter
-n_runs = 20
+n_runs = 30
 
 for k in range(n_runs):
     distribution = uniform_opinion(N_nodes)

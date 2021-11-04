@@ -23,3 +23,4 @@ y_t = (np.array(y) - 0.5)/np.array(x)
 x_t = 0.5/np.array(x)
 
 BifurcationDiagramPlotter().plot(x_t, y_t, 'confidence bound', 'opinion', y_limits=(-5,5), weight=np.array(p))
+# BifurcationDiagramPlotter().plot(x, y, 'confidence bound', 'opinion', weight=np.array(p))

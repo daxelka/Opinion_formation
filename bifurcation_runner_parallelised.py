@@ -1,8 +1,10 @@
 import networkx as nx
+import math
 from pathos.multiprocessing import ProcessingPool as Pool
 import time
+import json
 
-from utils.bifurcation_diagram.plotter import BifurcationDiagramPlotter
+from simulation import Simulation
 import numpy as np
 from distribution_tools import uniform_opinion
 from functools import partial
@@ -16,67 +18,87 @@ from functools import partial
 #     return pdf
 
 # Graph Initialisation
-N_nodes: int = 10000
+N_nodes: int = 2000
+# Number of run for each parameter
+n_runs = 10
 
 # Create a set of initial distributions
 initial_opinions = []
-for sigma in range(1):
+for sigma in range(n_runs):
     distribution = uniform_opinion(N_nodes)
     initial_opinions.append(distribution)
+# Create a list of n_runs for different intervals
+ic_range = [10, 10, 10, 10]
+
+# Create a set of parameter intervals
+intervals = [(1, 2), (2, 4), (4, 5), (5, 6)]
+step = 0.05
+
+parameter_range = []
+for interval in intervals:
+    start, end = interval
+    size = math.ceil((end - start) / step)
+    deltas = np.linspace(start, end, num=size, endpoint=False)
+    epsilons = 0.5 / deltas
+    parameter_range.append(epsilons)
 
 
-def one_iteration(total_cores, N_nodes, initial_opinions, index):
-    from utils.bifurcation_diagram.generator import BifurcationDiagramGenerator
-    from utils.libs import drange
+def one_iteration(N_nodes, initial_opinions, parameter_range, ic_range, index):
+    from simulation import Simulation
     from deffuant_simple import DeffuantModelSimple
-    import numpy as np
 
     def run(parameter, initial_value):
+        # Initiate a model with confidence bound specified in parameter
         confidence_bound, cautiousness = parameter, 0.5
         model = DeffuantModelSimple(N_nodes, confidence_bound, cautiousness)
+        # Set initial condition
         model.set_opinion(initial_value)
+        # Run opinion formation on the model
         model.opinion_formation()
-        clusters, means = model.clusters_detector(model.get_opinion())
-        # Filter by cluster density
-        densities = model.cluster_density(clusters)
-        major_groups = np.array(means)[np.array(densities) > 0.1]
-        return major_groups
+        # if model converged to return opinion if not to return []
+        if model.get_opinion():
+            # Identify clusters and their means
+            clusters, means = model.clusters_detector(model.get_opinion())
+            # Calculate clusters densities
+            densities = model.cluster_density(clusters)
+            # Add results to data
+            result = []
+            for count, mean_value in enumerate(means):
+                density = densities[count]
+                result.append([mean_value, density])
+
+        else:
+            return []
+
+        return result
 
     def initial_values_iterator():
-        return initial_opinions
+        n_ic = ic_range[index]
+        return initial_opinions[:n_ic]
 
     # we split work between processes by parameter
     # index is a process specific part of the job
     def parameter_iterator():
-        start = 0.1 + (0.5 - 0.1) / total_cores * index
-        end = 0.1 + (0.5 - 0.1) / total_cores * (index + 1)
+        return parameter_range[index]
 
-        return drange(start, end, 0.01)
-
-    generator = BifurcationDiagramGenerator(parameter_iterator, initial_values_iterator, run)
+    generator = Simulation(parameter_iterator, initial_values_iterator, run)
 
     return generator.run()
 
 
 def unpack(lists):
-    xs = []
-    ys = []
-
-    for l in lists:
-        xs.extend(l[0])
-        ys.extend(l[1])
-
-    return [xs, ys]
+    merged_lists = {**lists[0], **lists[1], **lists[2], **lists[3]}
+    return merged_lists
 
 
 total_cores = 4
 p = Pool(total_cores)
 t0 = time.time()
 
-f = partial(one_iteration, total_cores, N_nodes, initial_opinions)
+f = partial(one_iteration, N_nodes, initial_opinions, parameter_range, ic_range)
 
 try:
-    x_var, y_var = unpack(p.map(f, range(total_cores)))
+    experiments = unpack(p.map(f, range(total_cores)))
 finally:
     p.terminate()
 
@@ -84,8 +106,16 @@ t1 = time.time()
 
 print("performance time", t1 - t0)
 
-# transformation to (y, delta)
-y = (np.array(y_var) - 0.5) / np.array(x_var)
-x = 0.5 / np.array(x_var)
+# Writing to json
+data = {'setup': {'N_nodes': N_nodes,
+                  'step': step,
+                  'notes': 'uniform IC plus cos disturbance with 2 negative peaks and amplitude 0.5 '},
+        'experiments': experiments,
+        'initial_conditions': [r.tolist() for r in initial_opinions]
+        }
 
-BifurcationDiagramPlotter().plot(x_var, y_var, 'confidence bound', 'opinion')
+filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/test.txt'
+
+with open(filename, 'w') as outfile:
+    json.dump(data, outfile)
+print('json created')

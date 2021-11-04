@@ -16,7 +16,7 @@ class DeffuantModelSimple:
         self.CLUSTER_PRECISION = 0.02  # difference in neighbouring opinions belonging to the same cluster
         self.CLUSTER_MAX_LENGTH = 0.1
         # convergence parameters
-        self.MAXIMUM_STEPS = 5000000
+        self.MAXIMUM_STEPS = 10000000
         self.IDLE_STEPS = 100
         self.node_ids = range(self.N_nodes)
         self.converged = None

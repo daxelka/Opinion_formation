@@ -3,11 +3,8 @@ import numpy as np
 import math
 import json
 import time
-from utils.bifurcation_diagram.generator import BifurcationDiagramGenerator
-from utils.bifurcation_diagram.plotter import BifurcationDiagramPlotter
-from utils.libs import drange
+from simulation import Simulation
 from deffuant_simple import DeffuantModelSimple
-from distribution_tools import normal_opinion
 from distribution_tools import uniform_opinion
 from distribution_tools import inverse_transform_sampling
 
@@ -50,14 +47,10 @@ def run(parameter, initial_value):
             density = densities[count]
             results.append([mean_value, density])
 
-        if data['experiments'].get(parameter) is None:
-            data['experiments'][parameter] = []
-
-        data['experiments'][parameter].append(results)
     else:
         return []
 
-    return means
+    return results
 
 
 t0 = time.time()
@@ -68,13 +61,8 @@ N_nodes: int = 100
 # Generating the set of initial distributions
 initial_opinions = []
 # Number of run for each parameter
-n_runs = 30
-# n_peaks = 2
-#
-# for k in range(10):
-#     pdf = gen_pdf(n_peaks, 0.5)
-#     distribution = inverse_transform_sampling(pdf, N_nodes, (0, 1))
-#     initial_opinions.append(distribution)
+n_runs = 20
+
 for k in range(n_runs):
     distribution = uniform_opinion(N_nodes)
     initial_opinions.append(distribution)
@@ -84,22 +72,25 @@ def initial_values_iterator():
     return initial_opinions
 
 
-data = {'setup': {'N_nodes': N_nodes,
-                  'parameter_limits': (lower_bound, upper_bound),
-                  'step': step,
-                  'notes': 'uniform IC plus cos disturbance with 2 negative peaks and amplitude 0.5 '},
-        'experiments': {},
-        'initial_conditions': [r.tolist() for r in initial_opinions]
-        }
+# Simulation
+generator = Simulation(parameter_iterator, initial_values_iterator, run)
 
-generator = BifurcationDiagramGenerator(parameter_iterator, initial_values_iterator, run)
-
-x_var, y_var = generator.run()
+experiments = generator.run()
 
 t1 = time.time()
 print("performance time", t1-t0)
 
 # Writing to file
-with open('/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/data.txt', 'w') as outfile:
+data = {'setup': {'N_nodes': N_nodes,
+                  'parameter_limits': (lower_bound, upper_bound),
+                  'step': step,
+                  'notes': 'uniform IC plus cos disturbance with 2 negative peaks and amplitude 0.5 '},
+        'experiments': experiments,
+        'initial_conditions': [r.tolist() for r in initial_opinions]
+        }
+
+filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/test.txt'
+
+with open(filename, 'w') as outfile:
     json.dump(data, outfile)
 print('json created')

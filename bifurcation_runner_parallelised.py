@@ -7,31 +7,41 @@ import json
 from simulation import Simulation
 import numpy as np
 from distribution_tools import uniform_opinion
+from distribution_tools import inverse_transform_sampling
+from distribution_tools import show_distribution
 from functools import partial
 
 
-# def gen_pdf(n_peaks, epsilon):
-#     def pdf(x):
-#         f = np.ones(x.shape) + epsilon * np.cos((2*n_peaks)*np.pi*x)
-#         f / np.trapz(f, x)
-#         return f
-#     return pdf
+def gen_pdf(n_peaks, epsilon):
+    def pdf(x):
+        f = np.ones(x.shape) + epsilon * np.cos((2*n_peaks)*np.pi*x)
+        f / np.trapz(f, x)
+        return f
+    return pdf
 
 # Graph Initialisation
-N_nodes: int = 2000
+N_nodes: int = 10000
 # Number of run for each parameter
-n_runs = 10
+n_runs = 20
 
 # Create a set of initial distributions
 initial_opinions = []
+n_peaks = 2
+# for sigma in range(n_runs):
+#     distribution = uniform_opinion(N_nodes)
+#     initial_opinions.append(distribution)
 for sigma in range(n_runs):
-    distribution = uniform_opinion(N_nodes)
+    pdf = gen_pdf(n_peaks, 0.5)
+    distribution = inverse_transform_sampling(pdf, N_nodes, (0, 1))
     initial_opinions.append(distribution)
-# Create a list of n_runs for different intervals
-ic_range = [10, 10, 10, 10]
+
+# show_distribution(initial_opinions[10])
+# print('done')
 
 # Create a set of parameter intervals
-intervals = [(1, 2), (2, 4), (4, 5), (5, 6)]
+# intervals = [(1, 2), (2, 3), (3, 3.5), (3.5, 4), (4, 4.5), (4.5, 5)]
+intervals = [(1, 1.5), (1.5, 1.75), (1.75, 2), (2, 2.25), (2.25, 2.5), (2.5, 2.75), (2.75, 3),
+             (3, 3.25), (3.25, 3.5), (3.5, 3.75), (3.75, 4), (4, 4.25), (4.25, 4.5), (4.5, 4.75), (4.75, 5)]
 step = 0.05
 
 parameter_range = []
@@ -43,7 +53,7 @@ for interval in intervals:
     parameter_range.append(epsilons)
 
 
-def one_iteration(N_nodes, initial_opinions, parameter_range, ic_range, index):
+def one_iteration(N_nodes, initial_opinions, parameter_range, index):
     from simulation import Simulation
     from deffuant_simple import DeffuantModelSimple
 
@@ -73,12 +83,14 @@ def one_iteration(N_nodes, initial_opinions, parameter_range, ic_range, index):
         return result
 
     def initial_values_iterator():
-        n_ic = ic_range[index]
-        return initial_opinions[:n_ic]
+        return initial_opinions
 
     # we split work between processes by parameter
     # index is a process specific part of the job
     def parameter_iterator():
+        # start = 0.1 + (0.5 - 0.1) / total_cores * index
+        # end = 0.1 + (0.5 - 0.1) / total_cores * (index + 1)
+        # return drange(start, end, 0.01)
         return parameter_range[index]
 
     generator = Simulation(parameter_iterator, initial_values_iterator, run)
@@ -87,23 +99,23 @@ def one_iteration(N_nodes, initial_opinions, parameter_range, ic_range, index):
 
 
 def unpack(lists):
-    merged_lists = {**lists[0], **lists[1], **lists[2], **lists[3]}
+    merged_lists = {**lists[0], **lists[1], **lists[2], **lists[3], **lists[4], **lists[5], **lists[6],
+                    **lists[7], **lists[8], **lists[9], **lists[10], **lists[11], **lists[12], **lists[13], **lists[14]}
     return merged_lists
 
 
-total_cores = 4
+total_cores = 6
 p = Pool(total_cores)
 t0 = time.time()
 
-f = partial(one_iteration, N_nodes, initial_opinions, parameter_range, ic_range)
+f = partial(one_iteration, N_nodes, initial_opinions, parameter_range)
 
 try:
-    experiments = unpack(p.map(f, range(total_cores)))
+    experiments = unpack(p.map(f, range(len(intervals))))
 finally:
     p.terminate()
 
 t1 = time.time()
-
 print("performance time", t1 - t0)
 
 # Writing to json
@@ -114,7 +126,7 @@ data = {'setup': {'N_nodes': N_nodes,
         'initial_conditions': [r.tolist() for r in initial_opinions]
         }
 
-filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/test.txt'
+filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/cos_2peaks_10k.txt'
 
 with open(filename, 'w') as outfile:
     json.dump(data, outfile)

@@ -1,8 +1,10 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from numpy.random import random
 import scipy.stats as stats
 import scipy.optimize
 from scipy import interpolate
+
 
 
 def random_opinion(n_nodes):
@@ -51,6 +53,11 @@ def normal_opinion(n_nodes, mu, sigma, lower_bound, upper_bound):
     opinion = trunc_samples(mu=mu_to_use, sigma=sigma_to_use, lower=lower_bound, upper=upper_bound, num_samples=n_nodes)
     return opinion
 
+def show_distribution(opinions):
+    bins = [0.01 * n for n in range(100)]
+    plt.hist(opinions, bins=bins, density=True)
+    plt.title("Histogram of opinions")
+    plt.show()
 
 # def multimodal_normal_opinion(n_nodes, sigma):
 #     rng = np.random.default_rng()

@@ -2,7 +2,7 @@ import numpy as np
 import json
 from utils.bifurcation_diagram.plotter import BifurcationDiagramPlotter
 
-filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/test.txt'
+filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/cos_2peaks_10k.txt'
 
 x = []
 y = []

@@ -26,12 +26,11 @@ n_runs = 20
 
 # Create a set of initial distributions
 initial_opinions = []
-n_peaks = 2
-# for sigma in range(n_runs):
-#     distribution = uniform_opinion(N_nodes)
-#     initial_opinions.append(distribution)
+n_peaks = 3
+amplitude = 0.2
+
 for sigma in range(n_runs):
-    pdf = gen_pdf(n_peaks, 0.5)
+    pdf = gen_pdf(n_peaks, amplitude)
     distribution = inverse_transform_sampling(pdf, N_nodes, (0, 1))
     initial_opinions.append(distribution)
 
@@ -39,7 +38,6 @@ for sigma in range(n_runs):
 # print('done')
 
 # Create a set of parameter intervals
-# intervals = [(1, 2), (2, 3), (3, 3.5), (3.5, 4), (4, 4.5), (4.5, 5)]
 intervals = [(1, 1.5), (1.5, 1.75), (1.75, 2), (2, 2.25), (2.25, 2.5), (2.5, 2.75), (2.75, 3),
              (3, 3.25), (3.25, 3.5), (3.5, 3.75), (3.75, 4), (4, 4.25), (4.25, 4.5), (4.5, 4.75), (4.75, 5)]
 step = 0.05
@@ -116,17 +114,19 @@ finally:
     p.terminate()
 
 t1 = time.time()
-print("performance time", t1 - t0)
+convergence_time = t1-t0
+print("performance time", convergence_time)
 
 # Writing to json
 data = {'setup': {'N_nodes': N_nodes,
                   'step': step,
-                  'notes': 'uniform IC plus cos disturbance with 2 negative peaks and amplitude 0.5 '},
+                  'notes': 'uniform IC plus cos disturbance with ' + str(n_peaks) + ' negative peaks and amplitude ' + str(amplitude),
+                  'convergence_time': convergence_time},
         'experiments': experiments,
         'initial_conditions': [r.tolist() for r in initial_opinions]
         }
 
-filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/cos_2peaks_10k.txt'
+filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/cos_'+str(n_peaks)+'peaks_'+str(amplitude)+'ampl.txt'
 
 with open(filename, 'w') as outfile:
     json.dump(data, outfile)

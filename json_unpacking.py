@@ -1,8 +1,9 @@
 import numpy as np
 import json
 from utils.bifurcation_diagram.plotter import BifurcationDiagramPlotter
+from distribution_tools import show_distribution
 
-filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/cos_2peaks_10k.txt'
+filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/cos_3peaks_0.2ampl.txt'
 
 x = []
 y = []
@@ -24,3 +25,4 @@ x_t = 0.5/np.array(x)
 
 BifurcationDiagramPlotter().plot(x_t, y_t, 'confidence bound', 'opinion', y_limits=(-5,5), weight=np.array(p))
 # BifurcationDiagramPlotter().plot(x, y, 'confidence bound', 'opinion', weight=np.array(p))
+# show_distribution(data['initial_conditions'][3])

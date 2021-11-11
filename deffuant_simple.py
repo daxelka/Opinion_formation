@@ -21,7 +21,7 @@ class DeffuantModelSimple:
         self.node_ids = range(self.N_nodes)
         self.converged = None
 
-    def formation(self, node1, node2):
+    def interaction(self, node1, node2):
         value1 = self.opinions[node1]
         value2 = self.opinions[node2]
         diff = abs(value1 - value2)
@@ -32,6 +32,7 @@ class DeffuantModelSimple:
         else:
             return False
 
+
     def opinion_formation(self):
         n_idle_steps = 0
         total_steps = 0
@@ -40,9 +41,9 @@ class DeffuantModelSimple:
 
         while not_convergence:
             # choosing two nodes for interaction at random
-            edge = random.sample(self.node_ids,2)
+            edge = random.sample(self.node_ids, 2)
             # random edges
-            value = self.formation(*edge)
+            value = self.interaction(*edge)
             if value > 0:
                 node1, node2 = edge
                 value1 = self.opinions[node1]

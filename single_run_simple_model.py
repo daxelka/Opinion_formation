@@ -16,12 +16,18 @@ def gen_pdf(n_peaks, epsilon):
         return f
     return pdf
 
+
 t0 = time.perf_counter()
 pdf = gen_pdf(3, 0.1)
+
 initial_opinion = inverse_transform_sampling(pdf, N_nodes, (0, 1))
 
-# Set initial opinion
-model = DeffuantModelSimple(initial_opinion, 0.2, 0.5)
+# Initiate the model
+model = DeffuantModelSimple(N_nodes, 0.2, 0.5)
+
+# Set initial conditions
+model.set_opinion(initial_opinion)
+
 model.show_opinion_distribution(initial_opinion)
 
 # Run the model

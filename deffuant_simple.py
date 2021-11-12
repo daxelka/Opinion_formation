@@ -21,17 +21,25 @@ class DeffuantModelSimple:
         self.node_ids = range(self.N_nodes)
         self.converged = None
 
-    def interaction(self, node1, node2):
+    def interaction(self):
+        # choosing two nodes for interaction at random
+        edge = random.sample(self.node_ids, 2)
+        node1, node2 = edge
         value1 = self.opinions[node1]
         value2 = self.opinions[node2]
         diff = abs(value1 - value2)
         if diff < self.confidence and diff > self.PRECISION:
+            self.opinions[node1] = value1 + self.cautiousness * (value2 - value1)
+            self.opinions[node2] = value2 + self.cautiousness * (value1 - value2)
             return diff
         elif diff < self.PRECISION:
             return 0
         else:
             return False
 
+    def one_step(self):
+        self.interaction()
+        return self.opinions
 
     def opinion_formation(self):
         n_idle_steps = 0
@@ -40,16 +48,8 @@ class DeffuantModelSimple:
         idle_continuous_steps = True
 
         while not_convergence:
-            # choosing two nodes for interaction at random
-            edge = random.sample(self.node_ids, 2)
-            # random edges
-            value = self.interaction(*edge)
+            value = self.interaction()
             if value > 0:
-                node1, node2 = edge
-                value1 = self.opinions[node1]
-                value2 = self.opinions[node2]
-                self.opinions[node1] = value1 + self.cautiousness * (value2 - value1)
-                self.opinions[node2] = value2 + self.cautiousness * (value1 - value2)
                 idle_continuous_steps = False
             elif value == 0:
                 if idle_continuous_steps:  # check if the previous steps were idle too
@@ -119,3 +119,4 @@ class DeffuantModelSimple:
         else:
             opinions = []
         return opinions
+

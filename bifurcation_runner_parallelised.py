@@ -27,7 +27,7 @@ n_runs = 20
 # Create a set of initial distributions
 initial_opinions = []
 n_peaks = 3
-amplitude = 0.2
+amplitude = 0.1
 
 for sigma in range(n_runs):
     pdf = gen_pdf(n_peaks, amplitude)

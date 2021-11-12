@@ -7,27 +7,26 @@ from distribution_tools import inverse_transform_sampling
 import numpy as np
 
 # Initiating a opinions
-N_nodes: int = 100
+N_nodes: int = 10000
 
-def gen_pdf(n_peaks, epsilon):
-    def pdf(x):
-        f = np.ones(x.shape) + epsilon * np.cos((2*n_peaks-1)*np.pi*x)
-        f / np.trapz(f, x)
-        return f
-    return pdf
+# def gen_pdf(n_peaks, epsilon):
+#     def pdf(x):
+#         f = np.ones(x.shape) + epsilon * np.cos((2*n_peaks-1)*np.pi*x)
+#         f / np.trapz(f, x)
+#         return f
+#     return pdf
 
 
 t0 = time.perf_counter()
-pdf = gen_pdf(3, 0.1)
+# pdf = gen_pdf(3, 0.1)
 
-initial_opinion = inverse_transform_sampling(pdf, N_nodes, (0, 1))
+initial_opinion = uniform_opinion(N_nodes)
 
 # Initiate the model
-model = DeffuantModelSimple(N_nodes, 0.2, 0.5)
+model = DeffuantModelSimple(N_nodes, 0.5, 0.5)
 
 # Set initial conditions
 model.set_opinion(initial_opinion)
-
 model.show_opinion_distribution(initial_opinion)
 
 # Run the model
@@ -45,5 +44,5 @@ print('densities:',densities)
 clusters, means = model.clusters_detector(model.get_opinion())
 print('Means of clusters:', means)
 
-# Show opinion distribution
+#Show opinion distribution
 model.show_opinion_distribution(model.get_opinion())

@@ -3,7 +3,7 @@ import json
 from utils.bifurcation_diagram.plotter import BifurcationDiagramPlotter
 from distribution_tools import show_distribution
 
-filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/cos_3peaks_0.2ampl.txt'
+filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/cos_3peaks_0.1ampl.txt'
 
 x = []
 y = []

@@ -1,6 +1,4 @@
 import math
-
-import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
 import random
@@ -128,11 +126,6 @@ class DeffuantModelPolar:
 
     def set_opinion(self, opinion_array):
         self.opinions = list(opinion_array)
-
-    def set_circled_opinion(self, opinion_array):
-        # Transform opinions into [0,2*pi] space
-        circled_opinions = opinion_array * 2 * math.pi
-        self.opinions = list(circled_opinions)
 
     def get_opinion(self):
         if self.converged:

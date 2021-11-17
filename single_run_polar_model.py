@@ -1,13 +1,10 @@
-import networkx as nx
-import time
-from deffuant_polar import DeffuantModelPolar
-from distribution_tools import normal_opinion
-# from distribution_tools import uniform_opinion
-import distribution_tools as tools
-from distribution_tools import inverse_transform_sampling
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
+import time
+from deffuant_polar import DeffuantModelPolar
+import distribution_tools as tools
+import math
+
 
 
 # Initiating a opinions
@@ -24,17 +21,17 @@ N_nodes: int = 1000
 t0 = time.perf_counter()
 # pdf = gen_pdf(3, 0.1)
 
-initial_opinion = tools.uniform_opinion(N_nodes)
+initial_opinion = tools.uniform_opinion(N_nodes, limits=(0.0, 2*math.pi))
 
 # Initiate the model
-model = DeffuantModelPolar(N_nodes, 0.5, 0.5)
+model = DeffuantModelPolar(N_nodes, 0.2, 0.5)
 
 # Set initial conditions in circled space
-model.set_circled_opinion(initial_opinion)
+model.set_opinion(initial_opinion)
 
 model.show_opinion_distribution(model.get_unconverged_opinion())
-
-# # Run one step
+#
+# Run one step
 opinions = []
 opinions.append(list(model.get_unconverged_opinion()))
 
@@ -51,9 +48,4 @@ fig, ax = plt.subplots(1, 2, subplot_kw=dict(projection='polar'))
 tools.circular_hist(ax[0], np.array(opinions[-1]), bins = 100)
 plt.show()
 
-
-# sns.set_style("white")
-# # sns.displot(data=np.array(opinions[-1]), kind="kde")
-# sns.displot(data=np.array(opinions[-1]), kde=True)
-# plt.xlim(0, 6.28)
-# plt.show()
+tools.density_plot(np.array(opinions[-1]), x_limits=(0, 6.28))

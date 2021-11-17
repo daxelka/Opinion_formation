@@ -4,6 +4,7 @@ from numpy.random import random
 import scipy.stats as stats
 import scipy.optimize
 from scipy import interpolate
+import seaborn as sns
 
 
 
@@ -13,9 +14,10 @@ def random_opinion(n_nodes):
     return opinion_distribution
 
 
-def uniform_opinion(n_nodes):
+def uniform_opinion(n_nodes, limits=(0.0, 1.0)):
     rng = np.random.default_rng()
-    opinion = rng.uniform(0.0, 1.0, (n_nodes,))
+    start, end = limits
+    opinion = rng.uniform(start, end, (n_nodes,))
     return opinion
 
 
@@ -135,6 +137,24 @@ def circular_hist(ax, x, bins=16, density=True, offset=0, gaps=True):
 
     return n, bins, patches
 
+
+def density_plot(vector, x_limits=tuple(), y_limits=tuple(), title="", x_label=""):
+    sns.set_style("white")
+    # sns.displot(data=vector, kind="kde")
+    # sns.displot(data=vector, kde=True)
+    # sns.histplot(data=vector, stat="density", fill=False, color ='gray')
+    sns.histplot(data=vector, stat="density", color='gray', alpha=0.15)
+    # sns.kdeplot(data=vector, color="b")
+    sns.kdeplot(data=vector)
+    if x_limits:
+        plt.xlim(x_limits)
+    if y_limits:
+        plt.ylim(y_limits)
+    if title:
+        plt.title('g')
+    if x_label:
+        plt.xlabel(x_label)
+    plt.show()
 
 
 def truncated_mean_std(mu, sigma, lower, upper):

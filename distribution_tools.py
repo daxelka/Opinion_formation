@@ -59,13 +59,83 @@ def show_distribution(opinions):
     plt.title("Histogram of opinions")
     plt.show()
 
-# def multimodal_normal_opinion(n_nodes, sigma):
-#     rng = np.random.default_rng()
-#     mus = [.25, .75]
-#     opinion = np.zeros(n_nodes)
-#     for mu in mus:
-#         opinion += rng.normal(mu, sigma, n_nodes)
-#     return opinion
+
+def circular_hist(ax, x, bins=16, density=True, offset=0, gaps=True):
+    """
+    Produce a circular histogram of angles on ax.
+
+    Parameters
+    ----------
+    ax : matplotlib.axes._subplots.PolarAxesSubplot
+        axis instance created with subplot_kw=dict(projection='polar').
+
+    x : array
+        Angles to plot, expected in units of radians.
+
+    bins : int, optional
+        Defines the number of equal-width bins in the range. The default is 16.
+
+    density : bool, optional
+        If True plot frequency proportional to area. If False plot frequency
+        proportional to radius. The default is True.
+
+    offset : float, optional
+        Sets the offset for the location of the 0 direction in units of
+        radians. The default is 0.
+
+    gaps : bool, optional
+        Whether to allow gaps between bins. When gaps = False the bins are
+        forced to partition the entire [-pi, pi] range. The default is True.
+
+    Returns
+    -------
+    n : array or list of arrays
+        The number of values in each bin.
+
+    bins : array
+        The edges of the bins.
+
+    patches : `.BarContainer` or list of a single `.Polygon`
+        Container of individual artists used to create the histogram
+        or list of such containers if there are multiple input datasets.
+    """
+    # Wrap angles to [-pi, pi)
+    x = (x+np.pi) % (2*np.pi) - np.pi
+
+    # Force bins to partition entire circle
+    if not gaps:
+        bins = np.linspace(-np.pi, np.pi, num=bins+1)
+
+    # Bin data and record counts
+    n, bins = np.histogram(x, bins=bins)
+
+    # Compute width of each bin
+    widths = np.diff(bins)
+
+    # By default plot frequency proportional to area
+    if density:
+        # Area to assign each bin
+        area = n / x.size
+        # Calculate corresponding bin radius
+        radius = (area/np.pi) ** .5
+    # Otherwise plot frequency proportional to radius
+    else:
+        radius = n
+
+    # Plot data on ax
+    patches = ax.bar(bins[:-1], radius, zorder=1, align='edge', width=widths,
+                     edgecolor='C0', fill=False, linewidth=1)
+
+    # Set the direction of the zero angle
+    ax.set_theta_offset(offset)
+
+    # Remove ylabels for area plots (they are mostly obstructive)
+    if density:
+        ax.set_yticks([])
+
+    return n, bins, patches
+
+
 
 def truncated_mean_std(mu, sigma, lower, upper):
     # N.B. lower/upper are the actual values, not Z-scaled
@@ -91,13 +161,3 @@ def corrector(mu, sigma, lower, upper):
         x0=[mu, sigma])
     return result.x
 
-# mu, sigma = 0, 5 # mean and standard deviation
-# s = trunc_samples(mu=mu, sigma=sigma, lower=0, upper=1, num_samples=10**7)
-# mu_to_use, sigma_to_use = corrector(mu, sigma, 0, 1)
-# print(s.mean(), s.std())
-# print(mu_to_use, sigma_to_use)
-# s = trunc_samples(mu=mu_to_use, sigma=sigma_to_use, lower=0, upper=1, num_samples=10**7)
-# m = normal_opinion(10**7, mu, sigma, 0, 1)
-#
-# print(s.mean(), s.std())
-# print(m.mean(), m.std())

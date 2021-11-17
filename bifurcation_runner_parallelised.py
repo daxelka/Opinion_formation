@@ -21,7 +21,7 @@ def gen_pdf(n_peaks, epsilon):
 
 # Graph Initialisation
 N_nodes: int = 10000
-# Number of run for each parameter
+# Number of runs for each parameter
 n_runs = 20
 
 # Create a set of initial distributions

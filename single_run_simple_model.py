@@ -1,13 +1,12 @@
 import networkx as nx
 import time
 from deffuant_simple import DeffuantModelSimple
-from distribution_tools import normal_opinion
-from distribution_tools import uniform_opinion
+import distribution_tools as tools
 from distribution_tools import inverse_transform_sampling
 import numpy as np
 
 # Initiating a opinions
-N_nodes: int = 10000
+N_nodes: int = 5000
 
 # def gen_pdf(n_peaks, epsilon):
 #     def pdf(x):
@@ -17,32 +16,38 @@ N_nodes: int = 10000
 #     return pdf
 
 
-t0 = time.perf_counter()
+
 # pdf = gen_pdf(3, 0.1)
 
-initial_opinion = uniform_opinion(N_nodes)
+initial_opinion = tools.uniform_opinion(N_nodes)
 
 # Initiate the model
-model = DeffuantModelSimple(N_nodes, 0.5, 0.5)
+model = DeffuantModelSimple(N_nodes, 0.2, 0.5)
 
 # Set initial conditions
 model.set_opinion(initial_opinion)
 model.show_opinion_distribution(initial_opinion)
 
-# Run the model
-model.opinion_formation()
-t1 = time.perf_counter()
-print('performance time:', t1 - t0)
+# Run N steps on the model
+opinions = []
+opinions.append(list(model.get_unconverged_opinion()))
 
-clusters, means = model.clusters_detector(model.get_opinion())
-densities = model.cluster_density(clusters)
-print('menas:', means)
-print('densities:',densities)
+for i in range(50000):
+    new_opinion = model.one_step()
+    opinions.append(list(new_opinion))
 
-
-# Clusters in final opinion
-clusters, means = model.clusters_detector(model.get_opinion())
-print('Means of clusters:', means)
+# clusters, means = model.clusters_detector(model.get_opinion())
+# densities = model.cluster_density(clusters)
+# print('menas:', means)
+# print('densities:',densities)
+#
+#
+# # Clusters in final opinion
+# clusters, means = model.clusters_detector(model.get_opinion())
+# print('Means of clusters:', means)
 
 #Show opinion distribution
-model.show_opinion_distribution(model.get_opinion())
+# model.show_opinion_distribution(model.get_opinion())
+model.show_opinion_distribution(opinions[-1])
+
+tools.density_plot(np.array(opinions[-1]), x_limits=(0, 1))

@@ -120,3 +120,6 @@ class DeffuantModelSimple:
             opinions = []
         return opinions
 
+    def get_unconverged_opinion(self):
+        return self.opinions
+

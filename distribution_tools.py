@@ -151,7 +151,7 @@ def density_plot(vector, x_limits=tuple(), y_limits=tuple(), title="", x_label="
     if y_limits:
         plt.ylim(y_limits)
     if title:
-        plt.title('g')
+        plt.title(title)
     if x_label:
         plt.xlabel(x_label)
     plt.show()

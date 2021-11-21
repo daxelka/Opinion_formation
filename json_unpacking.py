@@ -7,10 +7,10 @@ filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/cos_3peak
 # unpack json
 data, x, y, p = mytools.unpack_json(filename)
 
-# trasfrom
+# transform to delta grid
 x_t, y_t = mytools.transform_to_delta_grid(x, y)
 
-
+# Plot diagram
 # BifurcationDiagramPlotter().plot(x_t, y_t, 'confidence bound', 'opinion', y_limits=(-5,5), weight=np.array(p))
 BifurcationDiagramPlotter().plot(x, y, 'confidence bound', 'opinion', y_limits=(0,7), weight=np.array(p))
 # show_distribution(data['initial_conditions'][3])

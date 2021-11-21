@@ -42,10 +42,8 @@ for i in range(50000):
 print('done')
 model.show_opinion_distribution(opinions[-1])
 
+tools.density_plot(np.array(opinions[-1])/2/math.pi, x_limits=(0, 1))
 
-
-fig, ax = plt.subplots(1, 2, subplot_kw=dict(projection='polar'))
-tools.circular_hist(ax[0], np.array(opinions[-1]), bins = 100)
-plt.show()
-
-tools.density_plot(np.array(opinions[-1]), x_limits=(0, 6.28))
+# fig, ax = plt.subplots(1, 2, subplot_kw=dict(projection='polar'))
+# tools.circular_hist(ax[0], np.array(opinions[-1]), bins = 100)
+# plt.show()

@@ -21,7 +21,9 @@ N_nodes: int = 1000
 t0 = time.perf_counter()
 # pdf = gen_pdf(3, 0.1)
 
-initial_opinion = tools.uniform_opinion(N_nodes, limits=(0.0, 2*math.pi))
+# initial_opinion = tools.uniform_opinion(N_nodes, limits=(0.0, 2*math.pi))
+initial_opinion_flat = tools.uniform_opinion(N_nodes, limits=(0.0, 1.0))
+initial_opinion = 2*math.pi * initial_opinion_flat
 
 # Initiate the model
 model = DeffuantModelPolar(N_nodes, 0.2, 0.5)
@@ -43,6 +45,12 @@ print('done')
 model.show_opinion_distribution(opinions[-1])
 
 tools.density_plot(np.array(opinions[-1])/2/math.pi, x_limits=(0, 1))
+
+fig, ax = plt.subplots(subplot_kw={'projection': 'polar'}, figsize=(4, 4))
+# Plot origin (agent's start point)
+# ax.plot(0, 0, color='black', marker='o', markersize=5)
+tools.circular_hist(ax, np.array(opinions[-1]), bins = 500)
+plt.show()
 
 # fig, ax = plt.subplots(1, 2, subplot_kw=dict(projection='polar'))
 # tools.circular_hist(ax[0], np.array(opinions[-1]), bins = 100)

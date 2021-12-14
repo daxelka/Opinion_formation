@@ -47,8 +47,6 @@ model.show_opinion_distribution(opinions[-1])
 tools.density_plot(np.array(opinions[-1])/2/math.pi, x_limits=(0, 1))
 
 fig, ax = plt.subplots(subplot_kw={'projection': 'polar'}, figsize=(4, 4))
-# Plot origin (agent's start point)
-# ax.plot(0, 0, color='black', marker='o', markersize=5)
 tools.circular_hist(ax, np.array(opinions[-1]), bins = 500)
 plt.show()
 

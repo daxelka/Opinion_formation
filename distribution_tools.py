@@ -62,7 +62,7 @@ def show_distribution(opinions):
     plt.show()
 
 
-def circular_hist(ax, x, bins=16, density=True, offset=0, gaps=True):
+def circular_hist(ax, x, bins=16, density=True, offset=0, gaps=True, color = 'steelblue'):
     """
     Produce a circular histogram of angles on ax.
 
@@ -125,8 +125,10 @@ def circular_hist(ax, x, bins=16, density=True, offset=0, gaps=True):
         radius = n
 
     # Plot data on ax
+    # patches = ax.bar(bins[:-1], radius, zorder=1, align='edge', width=widths,
+    #                  edgecolor='C0', fill=False, linewidth=1)
     patches = ax.bar(bins[:-1], radius, zorder=1, align='edge', width=widths,
-                     edgecolor='C0', fill=False, linewidth=1)
+                     edgecolor= color, fill=False, linewidth=1)
 
     # Set the direction of the zero angle
     ax.set_theta_offset(offset)

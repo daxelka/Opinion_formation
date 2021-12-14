@@ -4,6 +4,7 @@ from pathos.multiprocessing import ProcessingPool as Pool
 import time
 import json
 
+import distribution_tools as tools
 from simulation import Simulation
 import numpy as np
 from distribution_tools import uniform_opinion
@@ -20,43 +21,33 @@ def gen_pdf(n_peaks, epsilon):
     return pdf
 
 # Graph Initialisation
-N_nodes: int = 1000
-# Number of run for each parameter
-n_runs = 1
-n_repetitions = 5
+N_nodes: int = 10000
+# Number of runs for each parameter
+n_runs = 20
+
 # Create a set of initial distributions
 initial_opinions = []
 
-
 for sigma in range(n_runs):
-    distribution = uniform_opinion(N_nodes)
-    for m in range(n_repetitions):
-        initial_opinions.append(distribution)
+    distribution_flat = tools.uniform_opinion(N_nodes, (0, 1))
+    distribution = distribution_flat * 2 * math.pi
+    initial_opinions.append(distribution)
 
-show_distribution(initial_opinions[0])
+# show_distribution(initial_opinions[10])
+# print('done')
 
 # Create a set of parameter intervals
-# intervals = [(1, 1.5), (1.5, 1.75), (1.75, 2), (2, 2.25), (2.25, 2.5),
-#              (2.5, 2.75), (2.75, 3), (3, 3.25), (3.25, 3.5), (3.5, 3.75),
-#              (3.75, 4)]
+intervals = [(1, 1.5), (1.5, 1.75), (1.75, 2), (2, 2.25), (2.25, 2.5), (2.5, 2.75), (2.75, 3),
+             (3, 3.25), (3.25, 3.5), (3.5, 3.75), (3.75, 4), (4, 4.25), (4.25, 4.5), (4.5, 4.75), (4.75, 5)]
+step = 0.05
 
-# step = 0.05
-#
-# parameter_range = []
-# for interval in intervals:
-#     start, end = interval
-#     size = math.ceil((end - start) / step)
-#     deltas = np.linspace(start, end, num=size, endpoint=False)
-#     epsilons = 0.5 / deltas
-#     parameter_range.append(epsilons)
-
-def get_intervals(start, end, n_intervals, grid_step):
-    intervals = []
-    interval_step = (end - start)/n_intervals
-    for k in range(n_intervals):
-        intervals.append(np.linspace(start + interval_step * k, start + interval_step * (k+1),
-                                     num=math.ceil(interval_step/grid_step), endpoint=False))
-    return intervals
+parameter_range = []
+for interval in intervals:
+    start, end = interval
+    size = math.ceil((end - start) / step)
+    deltas = np.linspace(start, end, num=size, endpoint=False)
+    epsilons = 0.5 / deltas
+    parameter_range.append(epsilons)
 
 
 def one_iteration(N_nodes, initial_opinions, parameter_range, index):
@@ -103,23 +94,18 @@ def one_iteration(N_nodes, initial_opinions, parameter_range, index):
 
 def unpack(lists):
     merged_lists = {**lists[0], **lists[1], **lists[2], **lists[3], **lists[4], **lists[5], **lists[6],
-                    **lists[7], **lists[8], **lists[9]}
+                    **lists[7], **lists[8], **lists[9], **lists[10], **lists[11], **lists[12], **lists[13], **lists[14]}
     return merged_lists
 
 
-# Create a set of parameter intervals
-step = 0.01
-parameter_range = get_intervals(0.1, 0.3, 10, step)
-
-total_cores = 4
+total_cores = 6
 p = Pool(total_cores)
 t0 = time.time()
 
 f = partial(one_iteration, N_nodes, initial_opinions, parameter_range)
 
 try:
-    # experiments = unpack(p.map(f, range(len(intervals))))
-    experiments = unpack(p.map(f, range(len(parameter_range))))
+    experiments = unpack(p.map(f, range(len(intervals))))
 finally:
     p.terminate()
 
@@ -136,7 +122,7 @@ data = {'setup': {'N_nodes': N_nodes,
         'initial_conditions': [r.tolist() for r in initial_opinions]
         }
 
-filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/polar.txt'
+filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/polar_bifurcation_10k_20runs.txt'
 
 with open(filename, 'w') as outfile:
     json.dump(data, outfile)

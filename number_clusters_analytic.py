@@ -3,11 +3,12 @@ import numpy as np
 import math
 from data_tools import transform_to_delta_grid
 
-epsilons = np.linspace(0.1, 0.2, 50, endpoint=True)
+epsilons = np.linspace(0.1, 0.2, 100, endpoint=True)
 
 k_const = 2.85
 x = []
 y = []
+# n_max_array = []
 
 
 def perturbation(k,e):
@@ -35,7 +36,8 @@ def cluster_position(e, n, n_max):
 
 for e in epsilons:
     n_max = fastest_mode(e)
-    # print('e:', e, ' n_max:', n_max)
+    # n_max_array.append(n_max+1)
+    print('e:', e, ' n_max:', n_max)
     for i in range(n_max+1):
         cluster = cluster_position(e, i, n_max)
         x.append(e)

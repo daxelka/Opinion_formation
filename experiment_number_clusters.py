@@ -45,5 +45,5 @@ x_var = [x[0] for x in y]
 y_var = [x[1] for x in y]
 
 # Plot diagram
-BifurcationDiagramPlotter().plot(x_var, y_var, 'confidence bound', '# clusters', title= 'classical Deffuant model')
+BifurcationDiagramPlotter().plot(x_var, y_var, 'confidence bound', 'distance between clusters', title= 'classical Deffuant model')
 print('here you go')

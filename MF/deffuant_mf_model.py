@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import odeint
+import time
+import distribution_tools as tools
 
 
 class Deffuant_MF:
@@ -9,29 +11,37 @@ class Deffuant_MF:
         # find a closest point in grid and make a self.epsilon
         self.epsilon = epsilon
         self.size = len(p0)
-        self.grid = np.linspace(0, 1, num=self.size, endpoint=True)
-        self.dx = self.grid[1] - self.grid[0]
-        self.confidence = int(np.rint(self.epsilon / self.dx))
+        # opinion grid
+        self.opinion_grid = np.linspace(0, 1, num=self.size, endpoint=True)
+        self.dx = self.opinion_grid[1] - self.opinion_grid[0]
+        self.confidence = int(np.rint(self.epsilon / self.dx))  # epsilon translated into number of intervals on
+        # self.grid
         if self.confidence % 2:  # if odd
             self.confidence_halved = int(self.confidence / 2)
         else:  # if even
             self.confidence_halved = int(self.confidence / 2) - 1
-
-        self.z = np.linspace(self.dx, self.epsilon - self.dx, num=self.confidence - 1, endpoint=True)
-        self.z_halved = self.z[0:self.confidence_halved]
+        # epsilon grid
+        # self.epsilon_grid = np.linspace(self.dx, self.epsilon - self.dx, num=self.confidence - 1, endpoint=True)
+        self.epsilon_grid = np.linspace(0, self.epsilon, num=self.confidence, endpoint=False)
+        self.epsilon_grid_halved = self.epsilon_grid[0:self.confidence_halved]
+        print(self.confidence)
+        print(self.confidence_halved)
+        print(self.epsilon_grid.shape)
+        print(self.epsilon_grid_halved.shape)
+        # print(self.epsilon_grid)
 
         # print(self.dx)
 
     def equations(self, p, t):
-        confidence = int(np.rint(self.epsilon / self.dx))
-        confidence_halved = int(np.rint(self.epsilon / self.dx / 2))
+        # confidence = int(np.rint(self.epsilon / self.dx))
+        # confidence_halved = int(np.rint(self.epsilon / self.dx / 2))
+        #
+        # z = np.linspace(self.dx, self.epsilon, num=confidence)
+        # z_halved = np.linspace(self.dx, self.epsilon, num=confidence_halved)
 
-        z = np.linspace(self.dx, self.epsilon, num=confidence)
-        z_halved = np.linspace(self.dx, self.epsilon, num=confidence_halved)
-
-        dpdt = self.integral_inflow(p, confidence_halved, z_halved) \
-               - self.integral_outflow_right(p, confidence, z) \
-               - self.integral_outflow_left(p, confidence, z)
+        dpdt = 2 * self.integral_inflow(p, self.confidence_halved, self.epsilon_grid_halved) \
+               - self.integral_outflow_right(p, self.confidence, self.epsilon_grid) \
+               - self.integral_outflow_left(p, self.confidence, self.epsilon_grid)
         return dpdt
 
     def integrate(self, p0, t):
@@ -43,8 +53,8 @@ class Deffuant_MF:
         return self.integrate(p0, t)
 
     def integral_inflow(self, p, confidence_interval, x):
-        # confidence_interval = int(np.rint(self.epsilon / self.dx /2))
         integral = np.empty((len(p),))
+        # extend p with zeros to the left nad the right
         p_extended = np.concatenate((np.zeros((confidence_interval,)),
                                      p,
                                      np.zeros((confidence_interval,))))
@@ -57,7 +67,6 @@ class Deffuant_MF:
         return integral
 
     def integral_outflow_left(self, p, confidence_interval, x):
-        # confidence_interval = int(np.rint(self.epsilon / self.dx /2))
         integral = np.empty((len(p),))
         p_extended = np.concatenate((np.zeros((confidence_interval,)),
                                      p,
@@ -71,7 +80,6 @@ class Deffuant_MF:
         return integral
 
     def integral_outflow_right(self, p, confidence_interval, x):
-        # confidence_interval = int(np.rint(self.epsilon / self.dx /2))
         integral = np.empty((len(p),))
         p_extended = np.concatenate((np.zeros((confidence_interval,)),
                                      p,
@@ -82,7 +90,9 @@ class Deffuant_MF:
                 fun.append(p_extended[i + confidence_interval] * p_extended[i + confidence_interval + j])
 
             integral[i] = np.trapz(fun, x=x, axis=0)
+
         return integral
+
 
     # def integral_outflow_left_matrix(self, p, confidence_interval, x):
     #     M1 = np.tile(np.array([p]).transpose(), (1, self.size))
@@ -129,82 +139,27 @@ class Deffuant_MF:
     #     return np.sum(np.array(a), axis=0)
 
 
-# initial distribution
-# n_nodes = 5
-# rng = np.random.default_rng()
-# p0= rng.uniform(0, 1, (n_nodes,))
-# p0 = np.array([1, 2, 3, 4, 5])
 
-# # p0 = np.array([1,2,3,4,5])
-# model = Deffuant_MF(0.5, p0)
-# # model.integral2(p0)
-# integral = model.integral_inflow(p0, 2, [1, 2])
+# Initial condition
+N_nodes = 1000
+p0 = tools.uniform_opinion(N_nodes, (0,1))
 
+# model initialisation
+model = Deffuant_MF(0.3, p0)
 
-# model.mask_matrix_epsilon_down()
+# integrating the model
+# p,t = model.integrate(p0=p0, t=np.linspace(0.01, 10, 100))
 
-# result, t = model.run(p0)
+t0 = time.perf_counter()
 
-# Plotting
-# plt.plot(result[-1])
-# plt.show()
+p,t = model.run(p0=p0, dt=0.01, T=150)
 
-# def test_integral_inflow():
-#     p = np.array([1, 2, 3, 4, 5, 6, 7, 8])
-#     x = np.array([1, 2, 3])
-#     model = Deffuant_MF(0.5, p)
-#     integral = model.integral_inflow(p, 3, x)
-#     true_result = np.array([np.trapz(np.array([0, 0, 0]), x=x),
-#                             np.trapz(np.array([3, 0, 0]), x=x),
-#                             np.trapz(np.array([8, 5, 0]), x=x),
-#                             np.trapz(np.array([15, 12, 7]), x=x),
-#                             np.trapz(np.array([24, 21, 16]), x=x),
-#                             np.trapz(np.array([35, 32, 0]), x=x),
-#                             np.trapz(np.array([48, 0, 0]), x=x),
-#                             np.trapz(np.array([0, 0, 0]), x=x)])
-#     print(np.array_equal(integral, true_result))
+t1 = time.perf_counter()
+print('performance time:', t1 - t0)
 
+# plotting
+plt.plot(model.opinion_grid, p[-1, :])
+plt.show()
 
-# def test_integral_outflow_left():
-#     p = np.array([1, 2, 3, 4, 5, 6, 7, 8])
-#     x = np.array([1, 2, 3])
-#     model = Deffuant_MF(0.5, p)
-#     integral = model.integral_outflow_left(p, 3, x)
-#     true_result = np.array([np.trapz(np.array([0, 0, 0]), x=x),
-#                             np.trapz(np.array([2, 0, 0]), x=x),
-#                             np.trapz(np.array([6, 3, 0]), x=x),
-#                             np.trapz(np.array([12, 8, 4]), x=x),
-#                             np.trapz(np.array([20, 15, 10]), x=x),
-#                             np.trapz(np.array([30, 24, 18]), x=x),
-#                             np.trapz(np.array([42, 35, 28]), x=x),
-#                             np.trapz(np.array([56, 48, 40]), x=x)])
-#     print(np.array_equal(integral, true_result))
-
-
-# def test_integral_outflow_right():
-#     p = np.array([1, 2, 3, 4, 5, 6, 7, 8])
-#     x = np.array([1, 2, 3])
-#     model = Deffuant_MF(0.5, p)
-#     integral = model.integral_outflow_right(p, 3, x)
-#     true_result = np.array([np.trapz(np.array([2, 3, 4]), x=x),
-#                             np.trapz(np.array([6, 8, 10]), x=x),
-#                             np.trapz(np.array([12, 15, 18]), x=x),
-#                             np.trapz(np.array([20, 24, 28]), x=x),
-#                             np.trapz(np.array([30, 35, 40]), x=x),
-#                             np.trapz(np.array([42, 48, 0]), x=x),
-#                             np.trapz(np.array([56, 0, 0]), x=x),
-#                             np.trapz(np.array([0, 0, 0]), x=x)])
-#     print(np.array_equal(integral, true_result))
-
-
-# test_integral_inflow()
-# test_integral_outflow_left()
-# test_integral_outflow_right()
-
-# Testing intervals
-# p = np.linspace(0, 1, 22)
-# print(p)
-# model = Deffuant_MF(0.5, p)
-# p,t = model.integrate(p0=p0,t=[1,2])
-# plt.plot(t, p)
-# plt.show()
+# print(model.equations(p0,1))
+# print(model.integral_outflow_left(p0, model.confidence, model.epsilon_grid))

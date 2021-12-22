@@ -3,8 +3,8 @@ from utils.bifurcation_diagram.plotter import BifurcationDiagramPlotter
 import math
 import data_tools as mytools
 
-filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/polar_bifurcation_10k_20runs.txt'
-# filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/uniform_10k_20runs.txt'
+# filename = '/Users/daxelka/Research/Deffuant_model/Simulations/data/polar_bifurcation_10k_20runs.txt'
+filename = '/Users/daxelka/Research/Deffuant_model/Simulations/data/uniform_10k_20runs.txt'
 
 data_processed = {}
 def unpack_json_filtered(filename):

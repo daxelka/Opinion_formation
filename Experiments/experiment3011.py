@@ -1,9 +1,7 @@
-import networkx as nx
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-import json
-from deffuant_polar import DeffuantModelPolar
+from ABM.deffuant_polar import DeffuantModelPolar
 import distribution_tools as tools
 
 

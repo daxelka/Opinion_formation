@@ -1,13 +1,8 @@
-import networkx as nx
 import numpy as np
 import time
-import pickle
-from utils.bifurcation_diagram.generator import BifurcationDiagramGenerator
 from utils.bifurcation_diagram.plotter import BifurcationDiagramPlotter
 from utils.libs import drange
-from deffuant_simple import DeffuantModelSimple
-from distribution_tools import normal_opinion
-from distribution_tools import uniform_opinion
+from ABM.deffuant_simple import DeffuantModelSimple
 from distribution_tools import inverse_transform_sampling
 
 

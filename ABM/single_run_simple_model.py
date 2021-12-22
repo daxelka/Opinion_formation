@@ -1,8 +1,5 @@
-import networkx as nx
-import time
-from deffuant_simple import DeffuantModelSimple
+from ABM.deffuant_simple import DeffuantModelSimple
 import distribution_tools as tools
-from distribution_tools import inverse_transform_sampling
 import numpy as np
 
 # Initiating a opinions

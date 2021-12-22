@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-from deffuant_polar import DeffuantModelPolar
+from ABM.deffuant_polar import DeffuantModelPolar
 import distribution_tools as tools
 import math
 

@@ -1,13 +1,10 @@
-import networkx as nx
 import math
 from pathos.multiprocessing import ProcessingPool as Pool
 import time
 import json
 
-from simulation import Simulation
 import numpy as np
 from distribution_tools import uniform_opinion
-from distribution_tools import inverse_transform_sampling
 from distribution_tools import show_distribution
 from functools import partial
 
@@ -60,8 +57,8 @@ def get_intervals(start, end, n_intervals, grid_step):
 
 
 def one_iteration(N_nodes, initial_opinions, parameter_range, index):
-    from simulation import Simulation
-    from deffuant_polar import DeffuantModelPolar
+    from ABM.simulation import Simulation
+    from ABM.deffuant_polar import DeffuantModelPolar
 
     def run(parameter, initial_value):
         # Initiate a model with confidence bound specified in parameter

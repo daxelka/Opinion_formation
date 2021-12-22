@@ -1,13 +1,10 @@
-import networkx as nx
 import numpy as np
 import math
 import json
 import time
-from simulation import Simulation
-from deffuant_simple import DeffuantModelSimple
+from ABM.simulation import Simulation
+from ABM.deffuant_simple import DeffuantModelSimple
 from distribution_tools import uniform_opinion
-from distribution_tools import inverse_transform_sampling
-
 
 lower_bound = 1
 upper_bound = 7

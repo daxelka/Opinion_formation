@@ -3,8 +3,8 @@
 # and that this is not observed in the model on the infinite domain
 
 import numpy as np
-from deffuant_simple import DeffuantModelSimple
-from deffuant_polar import DeffuantModelPolar
+from ABM.deffuant_simple import DeffuantModelSimple
+from ABM.deffuant_polar import DeffuantModelPolar
 import distribution_tools as tools
 import math
 

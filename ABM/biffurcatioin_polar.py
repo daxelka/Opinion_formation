@@ -1,14 +1,10 @@
-import networkx as nx
 import math
 from pathos.multiprocessing import ProcessingPool as Pool
 import time
 import json
 
-from simulation import Simulation
+import distribution_tools as tools
 import numpy as np
-from distribution_tools import uniform_opinion
-from distribution_tools import inverse_transform_sampling
-from distribution_tools import show_distribution
 from functools import partial
 
 
@@ -26,12 +22,10 @@ n_runs = 20
 
 # Create a set of initial distributions
 initial_opinions = []
-n_peaks = 3
-amplitude = 0.1
 
 for sigma in range(n_runs):
-    pdf = gen_pdf(n_peaks, amplitude)
-    distribution = inverse_transform_sampling(pdf, N_nodes, (0, 1))
+    distribution_flat = tools.uniform_opinion(N_nodes, (0, 1))
+    distribution = distribution_flat * 2 * math.pi
     initial_opinions.append(distribution)
 
 # show_distribution(initial_opinions[10])
@@ -52,13 +46,13 @@ for interval in intervals:
 
 
 def one_iteration(N_nodes, initial_opinions, parameter_range, index):
-    from simulation import Simulation
-    from deffuant_simple import DeffuantModelSimple
+    from ABM.simulation import Simulation
+    from ABM.deffuant_polar import DeffuantModelPolar
 
     def run(parameter, initial_value):
         # Initiate a model with confidence bound specified in parameter
         confidence_bound, cautiousness = parameter, 0.5
-        model = DeffuantModelSimple(N_nodes, confidence_bound, cautiousness)
+        model = DeffuantModelPolar(N_nodes, confidence_bound, cautiousness)
         # Set initial condition
         model.set_opinion(initial_value)
         # Run opinion formation on the model
@@ -86,9 +80,6 @@ def one_iteration(N_nodes, initial_opinions, parameter_range, index):
     # we split work between processes by parameter
     # index is a process specific part of the job
     def parameter_iterator():
-        # start = 0.1 + (0.5 - 0.1) / total_cores * index
-        # end = 0.1 + (0.5 - 0.1) / total_cores * (index + 1)
-        # return drange(start, end, 0.01)
         return parameter_range[index]
 
     generator = Simulation(parameter_iterator, initial_values_iterator, run)
@@ -120,13 +111,13 @@ print("performance time", convergence_time)
 # Writing to json
 data = {'setup': {'N_nodes': N_nodes,
                   'step': step,
-                  'notes': 'uniform IC plus cos disturbance with ' + str(n_peaks) + ' negative peaks and amplitude ' + str(amplitude),
+                  'notes': 'polar model with uniform IC',
                   'convergence_time': convergence_time},
         'experiments': experiments,
         'initial_conditions': [r.tolist() for r in initial_opinions]
         }
 
-filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/cos_'+str(n_peaks)+'peaks_'+str(amplitude)+'ampl.txt'
+filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/polar_bifurcation_10k_20runs.txt'
 
 with open(filename, 'w') as outfile:
     json.dump(data, outfile)

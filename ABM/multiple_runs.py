@@ -1,6 +1,6 @@
 import networkx as nx
 import time
-from deffuant import DeffuantModel
+from ABM.deffuant import DeffuantModel
 from distribution_tools import uniform_opinion
 
 # Initiating a graph

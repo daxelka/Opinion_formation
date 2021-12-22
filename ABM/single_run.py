@@ -1,8 +1,6 @@
 import networkx as nx
 import time
-from deffuant import DeffuantModel
-from distribution_tools import normal_opinion
-from distribution_tools import uniform_opinion
+from ABM.deffuant import DeffuantModel
 from distribution_tools import inverse_transform_sampling
 import numpy as np
 

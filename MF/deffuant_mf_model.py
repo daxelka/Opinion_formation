@@ -1,8 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.integrate import odeint
-import time
-import distribution_tools as tools
 
 
 class Deffuant_MF:
@@ -86,26 +83,3 @@ class Deffuant_MF:
 
     def total_mass(self, p):
         return np.trapz(p, self.opinion_grid)
-
-
-
-# Initial condition
-N_nodes = 800
-p0 = np.ones(N_nodes)
-
-# model initialisation
-model = Deffuant_MF(0.17, p0)
-
-# Model integrating
-t0 = time.perf_counter()
-
-p,t = model.run(p0=p0, dt=0.01, T=50)
-
-t1 = time.perf_counter()
-print('performance time:', t1 - t0)
-
-# plotting
-plt.plot(model.opinion_grid, p[-1, :])
-plt.show()
-
-model.total_mass(p0)

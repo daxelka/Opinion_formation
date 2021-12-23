@@ -28,17 +28,8 @@ class Deffuant_MF:
         print(self.confidence_halved)
         print(self.epsilon_grid.shape)
         print(self.epsilon_grid_halved.shape)
-        # print(self.epsilon_grid)
-
-        # print(self.dx)
 
     def equations(self, p, t):
-        # confidence = int(np.rint(self.epsilon / self.dx))
-        # confidence_halved = int(np.rint(self.epsilon / self.dx / 2))
-        #
-        # z = np.linspace(self.dx, self.epsilon, num=confidence)
-        # z_halved = np.linspace(self.dx, self.epsilon, num=confidence_halved)
-
         dpdt = 4 * self.integral_inflow(p, self.confidence_halved, self.epsilon_grid_halved) \
                - self.integral_outflow_right(p, self.confidence, self.epsilon_grid) \
                - self.integral_outflow_left(p, self.confidence, self.epsilon_grid)
@@ -93,9 +84,13 @@ class Deffuant_MF:
 
         return integral
 
+    def total_mass(self, p):
+        return np.trapz(p, self.opinion_grid)
+
+
 
 # Initial condition
-N_nodes = 400
+N_nodes = 800
 p0 = np.ones(N_nodes)
 
 # model initialisation
@@ -104,7 +99,7 @@ model = Deffuant_MF(0.17, p0)
 # Model integrating
 t0 = time.perf_counter()
 
-p,t = model.run(p0=p0, dt=0.01, T=200)
+p,t = model.run(p0=p0, dt=0.01, T=50)
 
 t1 = time.perf_counter()
 print('performance time:', t1 - t0)
@@ -112,3 +107,5 @@ print('performance time:', t1 - t0)
 # plotting
 plt.plot(model.opinion_grid, p[-1, :])
 plt.show()
+
+model.total_mass(p0)

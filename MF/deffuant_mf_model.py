@@ -27,7 +27,7 @@ class Deffuant_MF:
         print(self.epsilon_grid_halved.shape)
 
     def equations(self, p, t):
-        dpdt = 4 * self.integral_inflow(p, self.confidence_halved, self.epsilon_grid_halved) \
+        dpdt =  2 * self.integral_inflow(p, self.confidence_halved, self.epsilon_grid_halved) \
                - self.integral_outflow_right(p, self.confidence, self.epsilon_grid) \
                - self.integral_outflow_left(p, self.confidence, self.epsilon_grid)
         return dpdt
@@ -43,15 +43,23 @@ class Deffuant_MF:
     def integral_inflow(self, p, confidence_interval, x):
         integral = np.empty((len(p),))
         # extend p with zeros to the left nad the right
-        p_extended = np.concatenate((np.zeros((confidence_interval,)),
+        extension_interval = confidence_interval + 1
+        p_extended = np.concatenate((np.zeros((extension_interval,)),
                                      p,
-                                     np.zeros((confidence_interval,))))
+                                     np.zeros((extension_interval,))))
         for i in range(len(p)):
-            fun = []
+            fun1 = []
+            fun2 = []
+            fun3 = []
             for j in range(1, confidence_interval + 1):
-                fun.append(p_extended[i + confidence_interval - j] * p_extended[i + confidence_interval + j])
+                fun1.append(p_extended[i + extension_interval - j] * p_extended[i + extension_interval + j])
 
-            integral[i] = np.trapz(fun, x=x, axis=0)
+            for j in range(0, confidence_interval + 1):
+                fun2.append(p_extended[i + extension_interval - j] * p_extended[i + extension_interval + j + 1])
+                fun3.append(p_extended[i + extension_interval - j - 1] * p_extended[i + extension_interval + j])
+
+            # integral[i] = np.trapz(fun1, x=x, axis=0) + 1/2 * np.trapz(fun2, x=x, axis=0) + 1/2 * np.trapz(fun3, x=x, axis=0)
+            integral[i] = self.dx * (np.sum(fun1, axis=0) + 1 / 2 * np.trapz(fun2, axis=0) + 1 / 2 * np.trapz(fun3, axis=0))
         return integral
 
     def integral_outflow_left(self, p, confidence_interval, x):

@@ -5,12 +5,12 @@ from deffuant_mf_model import Deffuant_MF
 
 
 # Initial condition
-N_nodes = 2000
-confidence_bound = 0.1
+N_nodes = 801
+confidence_bound = 0.2
 p0 = np.ones(N_nodes)
 
 # time scale
-time_dimensionless = 5
+time_dimensionless = 10
 time_steps = int(time_dimensionless / confidence_bound)
 print('time steps required: ', time_steps)
 

@@ -51,10 +51,10 @@ for e in epsilons:
 
 # number of clusters from ABM simulations
 # filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/polar_bifurcation_10k_20runs.txt'
-filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/uniform_10k_20runs.txt'
+# filename = '/Users/daxelka/Research/Deffuant_model/ABM_simulation/data/uniform_10k_20runs.txt'
 
 # unpack json
-data, e_abm, n_abm, p = unpack_n_clusters(filename)
+# data, e_abm, n_abm, p = unpack_n_clusters(filename)
 
 # deltas_biffurcations = np.array([1.871, 2.248, 4.079, 4.455, 6.259, 6.638, 8.431,8.810])
 deltas_biffurcations = np.array([4.079, 4.455, 6.259, 6.638, 8.431, 8.810])

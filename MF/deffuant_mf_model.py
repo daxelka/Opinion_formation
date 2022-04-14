@@ -27,7 +27,7 @@ class Deffuant_MF:
         print(self.epsilon_grid_halved.shape)
 
     def equations(self, p, t):
-        dpdt =  2 * self.integral_inflow(p, self.confidence_halved, self.epsilon_grid_halved) \
+        dpdt =2 * self.integral_inflow(p, self.confidence_halved, self.epsilon_grid_halved) \
                - self.integral_outflow_right(p, self.confidence, self.epsilon_grid) \
                - self.integral_outflow_left(p, self.confidence, self.epsilon_grid)
         return dpdt
@@ -69,10 +69,17 @@ class Deffuant_MF:
                                      np.zeros((confidence_interval,))))
         for i in range(len(p)):
             fun = []
-            for j in range(1, confidence_interval + 1):
+            # for j in range(1, confidence_interval + 1):
+            #     fun.append(p_extended[i + confidence_interval] * p_extended[i + confidence_interval - j])
+            #
+            # integral[i] = np.trapz(fun, x=x, axis=0)
+
+            for j in range(2, confidence_interval + 1):
                 fun.append(p_extended[i + confidence_interval] * p_extended[i + confidence_interval - j])
 
-            integral[i] = np.trapz(fun, x=x, axis=0)
+            integral[i] = self.dx * np.sum(fun, axis=0) \
+                          + self.dx * p_extended[i + confidence_interval] * p_extended[i + confidence_interval - 1]
+
         return integral
 
     def integral_outflow_right(self, p, confidence_interval, x):
@@ -82,10 +89,16 @@ class Deffuant_MF:
                                      np.zeros((confidence_interval,))))
         for i in range(len(p)):
             fun = []
-            for j in range(1, confidence_interval + 1):
+            # for j in range(1, confidence_interval + 1):
+            #     fun.append(p_extended[i + confidence_interval] * p_extended[i + confidence_interval + j])
+            #
+            # integral[i] = np.trapz(fun, x=x, axis=0)
+
+            for j in range(2, confidence_interval + 1):
                 fun.append(p_extended[i + confidence_interval] * p_extended[i + confidence_interval + j])
 
-            integral[i] = np.trapz(fun, x=x, axis=0)
+            integral[i] = self.dx * np.sum(fun, axis=0) \
+                          + self.dx * p_extended[i + confidence_interval] * p_extended[i + confidence_interval + 1]
 
         return integral
 

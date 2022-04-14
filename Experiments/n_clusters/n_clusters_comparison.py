@@ -4,7 +4,7 @@ import math
 from data_tools import transform_to_delta_grid
 from data_tools import unpack_n_clusters
 
-deltas = np.linspace(4, 9.5, 100, endpoint=True)
+deltas = np.linspace(4, 9.5, 500, endpoint=True)
 # epsilons = np.linspace(0.07, 0.4, 100, endpoint=True)
 epsilons = 1/2/deltas
 
@@ -57,23 +57,39 @@ for e in epsilons:
 # data, e_abm, n_abm, p = unpack_n_clusters(filename)
 
 # deltas_biffurcations = np.array([1.871, 2.248, 4.079, 4.455, 6.259, 6.638, 8.431,8.810])
+deltas_biffurcations_susan = np.array([1.8600, 2.4450, 4.0600, 4.6600, 6.2300, 6.8400, 8.3900, 9.0050])
 deltas_biffurcations = np.array([4.079, 4.455, 6.259, 6.638, 8.431, 8.810])
+deltas_biffurcations_susan = np.array([4.0600, 4.6600, 6.2300, 6.8400, 8.3900, 9.0050])
+# deltas_biffurcations_susan_analytic = np.array([1.7384, 2.7379,  3.8454,  4.9620,  6.0830, 7.2086, 8.3297, 9.4552])
+deltas_biffurcations_susan_analytic = np.array([3.8454,  4.9620,  6.0830, 7.2086, 8.3297, 9.4552])
+deltas_biffurcations_num_corrected = np.array([4.0600, 4.95, 6.2300, 7.12, 8.3900, 9.29])
+
 number_clusters = np.array([4,5,6,7,8,9])
 
 plt.scatter(1/2/epsilons, n_max_exact, color='hotpink')
 # plt.scatter(1/2/epsilons, n_max_approx, color='#88c999', alpha=0.3)
-plt.scatter(1/2/epsilons, n_12d, color='blue', alpha=0.3)
+plt.scatter(1/2/epsilons, n_12d, color='blue', alpha=0.1)
 # plt.scatter(1/2/np.array(e_abm), n_abm, color='#88c999', alpha=0.3)
 
 plt.scatter(deltas_biffurcations, number_clusters, color='k')
 for i, xc in enumerate(deltas_biffurcations):
     ymin = number_clusters[i] - 0.5
     ymax = number_clusters[i] + 0.5
-    print(xc)
-    print(ymin)
-    print(ymax)
-    # plt.axvline(x=xc, ymin=ymin, ymax=ymax, color='k', linestyle='--')
     plt.vlines(x=xc, ymin=ymin, ymax=ymax, color='k')
+
+plt.scatter(deltas_biffurcations_susan, number_clusters, color='magenta')
+for i, xc in enumerate(deltas_biffurcations_susan):
+    ymin = number_clusters[i] - 0.5
+    ymax = number_clusters[i] + 0.5
+    plt.vlines(x=xc, ymin=ymin, ymax=ymax, color='magenta')
+
+# plt.scatter(deltas_biffurcations_susan_analytic, number_clusters + .2, color='red')
+plt.scatter(deltas_biffurcations_num_corrected, number_clusters, color='green')
+for i, xc in enumerate(deltas_biffurcations_num_corrected):
+    ymin = number_clusters[i] - 0.5
+    ymax = number_clusters[i] + 0.5
+    plt.vlines(x=xc, ymin=ymin, ymax=ymax, color='green')
+
 plt.xlabel('delta', fontsize=18)
 plt.ylabel('# clusters', fontsize=18)
 plt.show()

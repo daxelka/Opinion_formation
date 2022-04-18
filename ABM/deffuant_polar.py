@@ -2,10 +2,11 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 import random
+from utils import libs
 
 
 class DeffuantModelPolar:
-    def __init__(self, N_nodes, confidence_interval, cautiousness):
+    def __init__(self, N_nodes, confidence_interval, cautiousness, jump_radius, jump_frequency):
         self.N_nodes = N_nodes
         self.opinions = []
         # Deffuant parameters
@@ -20,6 +21,9 @@ class DeffuantModelPolar:
         self.IDLE_STEPS = 100
         self.node_ids = range(self.N_nodes)
         self.converged = None
+        self.jump_radius = jump_radius
+        self.jump_frequency = jump_frequency
+        self.rng = np.random.default_rng()
 
     def closest_average_angle(self, angle1, angle2):
         diff1 = abs(angle1 - angle2)
@@ -34,8 +38,9 @@ class DeffuantModelPolar:
 
     def interaction(self):
         # choosing two nodes for interaction at random
-        edge = random.sample(self.node_ids, 2)
-        node1, node2 = edge
+        # edge = random.sample(self.node_ids, 2)
+        # node1, node2 = edge
+        node1, node2 = random.sample(self.node_ids, 2)
         value1 = self.opinions[node1]
         value2 = self.opinions[node2]
         diff = min(abs(value1 - value2), 2 * math.pi - abs(value1 - value2))
@@ -49,31 +54,57 @@ class DeffuantModelPolar:
         else:
             return False
 
+    def random_jump(self):
+        node = random.sample(self.node_ids, 1)[0]
+        value = self.opinions[node]
+        # print(self.rng.uniform(value - self.jump_radius, value + self.jump_radius, (int(2*self.jump_radius*self.N_nodes),)))
+        jump_range = libs.drange(value - self.jump_radius, value + self.jump_radius, 2*self.jump_radius/int(2*self.jump_radius*self.N_nodes))
+        new_value = random.sample(list(jump_range), 1)[0]
+        return new_value
+
+    def single_step(self):
+        # take a probability of random jump
+        m = random.randint(1, 100)
+
+        if m <= self.jump_frequency:
+            self.random_jump()
+            # marker = False
+        else:
+            # marker = self.interaction()
+            self.interaction()
+
     def one_step(self):
         self.interaction()
         # value = self.interaction()
         # print(value)
         return self.opinions
 
-    def opinion_formation(self):
-        n_idle_steps = 0
-        total_steps = 0
-        not_convergence = True
-        idle_continuous_steps = True
+    def opinion_formation(self, until_converged=False, n_steps=100):
 
-        while not_convergence:
-            value = self.interaction()
-            if value > 0:
-                idle_continuous_steps = False
-            elif value == 0:
-                if idle_continuous_steps:  # check if the previous steps were idle too
-                    n_idle_steps += 1
-                else:
-                    idle_continuous_steps = True
-                    n_idle_steps = 0
+        if until_converged:
+            n_idle_steps = 0
+            total_steps = 0
+            not_convergence = True
+            idle_continuous_steps = True
 
-            total_steps += 1
-            not_convergence, n_idle_steps = self.is_not_convergence(n_idle_steps, total_steps)
+            while not_convergence:
+                value = self.interaction()
+                # value = self.single_step()
+                if value > 0:
+                    idle_continuous_steps = False
+                elif value == 0:
+                    if idle_continuous_steps:  # check if the previous steps were idle too
+                        n_idle_steps += 1
+                    else:
+                        idle_continuous_steps = True
+                        n_idle_steps = 0
+
+                total_steps += 1
+                not_convergence, n_idle_steps = self.is_not_convergence(n_idle_steps, total_steps)
+        else:
+            for i in range(n_steps):
+                self.single_step()
+
         return self.opinions
 
     def is_not_convergence(self, n_idle_steps, total_steps):
@@ -136,3 +167,4 @@ class DeffuantModelPolar:
 
     def get_unconverged_opinion(self):
         return self.opinions
+

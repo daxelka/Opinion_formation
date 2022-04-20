@@ -8,6 +8,7 @@ from utils import libs
 class DeffuantModelPolar:
     def __init__(self, N_nodes, confidence_interval, cautiousness, jump_radius, jump_frequency):
         self.N_nodes = N_nodes
+        self.x_step = 1/N_nodes * 2 * math.pi
         self.opinions = []
         # Deffuant parameters
         self.confidence = confidence_interval * 2 * math.pi  # restricted to interval (0, 0.5]
@@ -21,7 +22,7 @@ class DeffuantModelPolar:
         self.IDLE_STEPS = 100
         self.node_ids = range(self.N_nodes)
         self.converged = None
-        self.jump_radius = jump_radius
+        self.jump_radius = jump_radius * 2 * math.pi
         self.jump_frequency = jump_frequency
         self.rng = np.random.default_rng()
 
@@ -58,15 +59,21 @@ class DeffuantModelPolar:
         node = random.sample(self.node_ids, 1)[0]
         value = self.opinions[node]
         # print(self.rng.uniform(value - self.jump_radius, value + self.jump_radius, (int(2*self.jump_radius*self.N_nodes),)))
-        jump_range = libs.drange(value - self.jump_radius, value + self.jump_radius, 2*self.jump_radius/int(2*self.jump_radius*self.N_nodes))
-        new_value = random.sample(list(jump_range), 1)[0]
-        return new_value
+        jump_range = list(libs.drange(value - self.jump_radius,
+                                 value + self.jump_radius,
+                                 self.x_step))
+        new_value = random.sample(jump_range, 1)[0]
+        if new_value > 2 * math.pi:
+            new_value = new_value - 2 * math.pi
+        elif new_value < 0:
+            new_value = new_value + 2 * math.pi
+
 
     def single_step(self):
         # take a probability of random jump
         m = random.randint(1, 100)
 
-        if m <= self.jump_frequency:
+        if m <= self.jump_frequency * 100:
             self.random_jump()
             # marker = False
         else:

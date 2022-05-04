@@ -23,7 +23,7 @@ class DeffuantModelPolar:
         self.node_ids = range(self.N_nodes)
         self.converged = None
         self.jump_radius = jump_radius * 2 * math.pi
-        self.jump_frequency = jump_frequency
+        self.jump_frequency = jump_frequency * 100
         self.rng = np.random.default_rng()
 
     def closest_average_angle(self, angle1, angle2):
@@ -39,13 +39,10 @@ class DeffuantModelPolar:
 
     def interaction(self):
         # choosing two nodes for interaction at random
-        # edge = random.sample(self.node_ids, 2)
-        # node1, node2 = edge
         node1, node2 = random.sample(self.node_ids, 2)
         value1 = self.opinions[node1]
         value2 = self.opinions[node2]
         diff = min(abs(value1 - value2), 2 * math.pi - abs(value1 - value2))
-        # print(diff / 2/math.pi)
         if diff < self.confidence and diff > self.PRECISION:
             self.opinions[node1] = self.closest_average_angle(value1, value2)
             self.opinions[node2] = self.closest_average_angle(value1, value2)
@@ -58,32 +55,30 @@ class DeffuantModelPolar:
     def random_jump(self):
         node = random.sample(self.node_ids, 1)[0]
         value = self.opinions[node]
-        # print(self.rng.uniform(value - self.jump_radius, value + self.jump_radius, (int(2*self.jump_radius*self.N_nodes),)))
-        jump_range = list(libs.drange(value - self.jump_radius,
-                                 value + self.jump_radius,
-                                 self.x_step))
-        new_value = random.sample(jump_range, 1)[0]
+        new_value = list(self.rng.uniform(value - self.jump_radius,
+                                           value + self.jump_radius,
+                                           (1,)))[0]
         if new_value > 2 * math.pi:
             new_value = new_value - 2 * math.pi
         elif new_value < 0:
             new_value = new_value + 2 * math.pi
+        self.opinions[node] = new_value
+
 
 
     def single_step(self):
         # take a probability of random jump
         m = random.randint(1, 100)
 
-        if m <= self.jump_frequency * 100:
+        if m <= self.jump_frequency:
             self.random_jump()
-            # marker = False
+
         else:
-            # marker = self.interaction()
             self.interaction()
+
 
     def one_step(self):
         self.interaction()
-        # value = self.interaction()
-        # print(value)
         return self.opinions
 
     def opinion_formation(self, until_converged=False, n_steps=100):

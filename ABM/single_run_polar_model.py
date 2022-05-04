@@ -30,7 +30,7 @@ initial_opinion = 2*math.pi * initial_opinion_flat
 model = DeffuantModelPolar(N_nodes, confidence_interval=0.2,
                            cautiousness=0.5,
                            jump_radius=0.2,
-                           jump_frequency= 0.1)
+                           jump_frequency=0.1)
 
 # Set initial conditions in circled space
 model.set_opinion(initial_opinion)

@@ -5,7 +5,7 @@ import random
 
 
 class DeffuantModelSimple:
-    def __init__(self, N_nodes, confidence_interval, cautiousness):
+    def __init__(self, N_nodes, confidence_interval, cautiousness, jump_radius, jump_frequency):
         self.N_nodes = N_nodes
         self.opinions = []
         # Deffuant parameters
@@ -20,6 +20,9 @@ class DeffuantModelSimple:
         self.IDLE_STEPS = 100
         self.node_ids = range(self.N_nodes)
         self.converged = None
+        self.jump_radius = jump_radius
+        self.jump_frequency = jump_frequency * 100
+        self.rng = np.random.default_rng()
 
     def interaction(self):
         # choosing two nodes for interaction at random
@@ -36,6 +39,28 @@ class DeffuantModelSimple:
             return 0
         else:
             return False
+
+    def random_jump(self):
+        node = random.sample(self.node_ids, 1)[0]
+        value = self.opinions[node]
+        new_value = list(self.rng.uniform(value - self.jump_radius,
+                                           value + self.jump_radius,
+                                           (1,)))[0]
+        if new_value > 1:
+            new_value = 1
+        elif new_value < 0:
+            new_value = 0
+        self.opinions[node] = new_value
+
+    def single_step(self):
+        # take a probability of random jump
+        m = random.randint(1, 100)
+
+        if m <= self.jump_frequency:
+            self.random_jump()
+
+        else:
+            self.interaction()
 
     def one_step(self):
         self.interaction()

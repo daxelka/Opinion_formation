@@ -64,8 +64,6 @@ class DeffuantModelPolar:
             new_value = new_value + 2 * math.pi
         self.opinions[node] = new_value
 
-
-
     def single_step(self):
         # take a probability of random jump
         m = random.randint(1, 100)
@@ -75,7 +73,6 @@ class DeffuantModelPolar:
 
         else:
             self.interaction()
-
 
     def one_step(self):
         self.interaction()

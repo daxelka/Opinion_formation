@@ -13,17 +13,17 @@ plt.rc('text', usetex=True)
 
 # model parameters
 N_nodes: int = int(1e03)
-epsilon = 0.316
-gamma = 0.4
-m = 0.01
+epsilon = 0.1
+gamma = 0.05
+m = 0.1
 
 
 # simulation parameters
-n_steps: int = int(4e06)
+n_steps: int = int(80e06)
 
 # Plotting parameters
 N_sample = int(1e02)
-time_interval = int(1e03)
+time_interval = int(10e03)
 start_point_recording = int(0.1e06)
 end_point_recording = n_steps
 
@@ -79,8 +79,8 @@ time_variable = []
 [time_variable.append(list(np.ones(N_sample) * time)) for time in time_sample]
 
 plt.scatter(time_variable, opinions_selected, s=0.1, c='black')
-plt.ylim(0, 6.28)
 # plt.ylim(0, 1)
+plt.ylim(0, 6.28)
 plt.xlim(start_point_recording, end_point_recording)
 plt.title(r'$\varepsilon:$' + ' ' + str(epsilon) + ', '
           + r'$\gamma:$' + ' ' + str(gamma) + ', '
@@ -93,10 +93,10 @@ plt.xticks(fontsize=14)
 
 # Saving to file
 filename = '/Users/daxelka/Research/Deffuant_model/Simulations/img/noisy_e'\
-           + str(epsilon)+'_g'+str(gamma)+'_m'+str(m)+'.png'
+           + str(epsilon)+'_g'+str(gamma)+'_m'+str(m)+'extra_time.png'
 
 # filename = '/Users/daxelka/Research/Deffuant_model/Simulations/img/noisy_classic_e'\
-#            + str(epsilon)+'_g'+str(gamma)+'_m'+str(m)+'.png'
-# plt.savefig(filename)
+#            + str(epsilon)+'_g'+str(gamma)+'_m'+str(m)+'extra_time.png'
+plt.savefig(filename)
 
 plt.show()

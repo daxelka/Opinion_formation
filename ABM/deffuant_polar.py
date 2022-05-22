@@ -52,12 +52,17 @@ class DeffuantModelPolar:
         else:
             return False
 
+    # def boundary_calc_circular
+    #
+    # def boundary_calc_classical
+
     def random_jump(self):
         node = random.sample(self.node_ids, 1)[0]
         value = self.opinions[node]
         new_value = list(self.rng.uniform(value - self.jump_radius,
                                            value + self.jump_radius,
                                            (1,)))[0]
+
         if new_value > 2 * math.pi:
             new_value = new_value - 2 * math.pi
         elif new_value < 0:

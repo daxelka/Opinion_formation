@@ -16,6 +16,7 @@ N_nodes: int = int(1e03)
 epsilon = 0.1
 gamma = 0.05
 m = 0.1
+boundary_type = 'classic'
 
 
 # simulation parameters
@@ -33,11 +34,16 @@ initial_opinion_flat = tools.uniform_opinion(N_nodes, limits=(0.0, 1.0))
 initial_opinion = 2*math.pi * initial_opinion_flat
 # initial_opinion = initial_opinion_flat
 
+if boundary_type == 'classic':
+    boundary_calc = ClassicDeffCal
+else:
+    boundary_calc = Circular
 # Initiate the model
-model = DeffuantModelPolar(N_nodes, confidence_interval=epsilon,
+model = DeffuantModel(N_nodes, confidence_interval=epsilon,
                            cautiousness=0.5,
                            jump_radius=gamma,
-                           jump_frequency=m)
+                           jump_frequency=m,
+                           boundary_calc=boundary_calc)
 # model = DeffuantModelSimple(N_nodes, confidence_interval=epsilon,
 #                            cautiousness=0.5,
 #                            jump_radius=gamma,

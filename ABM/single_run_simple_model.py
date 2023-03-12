@@ -3,7 +3,7 @@ import distribution_tools as tools
 import numpy as np
 
 # Initiating a opinions
-N_nodes: int = 5000
+N_nodes: int = 500
 
 # def gen_pdf(n_peaks, epsilon):
 #     def pdf(x):
@@ -29,7 +29,7 @@ model.show_opinion_distribution(initial_opinion)
 opinions = []
 opinions.append(list(model.get_unconverged_opinion()))
 
-for i in range(50000):
+for i in range(5):
     new_opinion = model.one_step()
     opinions.append(list(new_opinion))
 

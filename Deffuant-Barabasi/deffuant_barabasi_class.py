@@ -22,49 +22,60 @@ class DeffuantBarabasiModel:
         self.converged = None
         self.rng = np.random.default_rng()
 
-    def interaction(self):
-        # choosing two nodes for interaction at random
-        edge = random.sample(self.node_ids, 2)
-        node1, node2 = edge
+    def dw_interaction(self, node1):
+        # choosing a second node for interaction at random
+        node2 = random.choice(self.node_ids)
         value1 = self.opinions[node1]
         value2 = self.opinions[node2]
         diff = abs(value1 - value2)
         if diff < self.confidence and diff > self.PRECISION:
             self.opinions[node1] = value1 + self.cautiousness * (value2 - value1)
             self.opinions[node2] = value2 + self.cautiousness * (value1 - value2)
+            print('node1 new: ' + str(self.opinions[node1]) + 'node2 new: ' + str(self.opinions[node2]))
             return diff
         elif diff < self.PRECISION:
             return 0
         else:
             return False
 
-    def insert_new_node(self):
-        hist, edges = np.histogram(self.opinions, bins=10, range=(0, 1))
-        print('hist', hist)
-        p = random.randint(0, len(self.opinions))
+    def preferential_adoption(self, node1):
+        numeric_opinions = [x for x in self.opinions if np.isfinite(x)]
+        hist, edges = np.histogram(numeric_opinions, bins=100, range=(0, 1))
+        p = random.randint(0, len(numeric_opinions))
 
         sum_hist = 0
         for index, value in enumerate(hist):
             sum_hist += value
             if sum_hist >= p:
                 new_opinion = (edges[index] + edges[index + 1]) / 2
-                print('p', p, ' index', index, ' edge value', new_opinion)
-                new_opinions = np.append(self.opinions, new_opinion)
-                self.set_opinion(new_opinions)
+                self.opinions[node1] = new_opinion
+                # print('node1 new opinion: ' + str(self.opinions[node1]))
+                # new_opinions = np.append(self.opinions, new_opinion)
+                # self.set_opinion(new_opinions)
                 break
 
     def single_step(self):
-        self.insert_new_node()
-        # self.interaction()
+        # pick node at random
+        node1 = random.choice(self.node_ids)
+        value1 = self.opinions[node1]
+        # check if the node have a non NA opinion
+        if np.isnan(value1):
+            print('B: value1 ' + str(value1))
+            self.preferential_adoption(node1)
+        else:
+            print('DW: value1 ' + str(value1))
+            self.dw_interaction(node1)
+        print(self.get_unconverged_opinion())
 
     def opinion_formation(self):
+        # needs to be corrected, def.interaction is changed and called dw_interaction
         n_idle_steps = 0
         total_steps = 0
         not_convergence = True
         idle_continuous_steps = True
 
         while not_convergence:
-            value = self.interaction()
+            value = self.interaction() #here I will need to change to single step and do something about returned value
             if value > 0:
                 idle_continuous_steps = False
             elif value == 0:

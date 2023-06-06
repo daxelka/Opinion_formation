@@ -13,30 +13,33 @@ class DeffuantBarabasiModel:
         self.cautiousness = cautiousness  # convergence parameter, restricted to interval (0, 0.5]
         self.PRECISION = 0.01  # difference between opinions that are considered identical
         # clusters parameters
-        self.CLUSTER_PRECISION = 0.02  # difference in neighbouring opinions belonging to the same cluster
+        self.CLUSTER_PRECISION = 0.08  # difference in neighbouring opinions belonging to the same cluster
         self.CLUSTER_MAX_LENGTH = 0.1
         # convergence parameters
-        self.MAXIMUM_STEPS = 1000
+        self.MAXIMUM_STEPS = int(1e06)
         self.IDLE_STEPS = 100
         self.node_ids = range(self.N_nodes)
         self.converged = None
         self.rng = np.random.default_rng()
 
     def dw_interaction(self, node1):
-        # choosing a second node for interaction at random
+        # choosing a second node for interaction from numeric opinions
         node2 = random.choice(self.node_ids)
         value1 = self.opinions[node1]
         value2 = self.opinions[node2]
-        diff = abs(value1 - value2)
-        if diff < self.confidence and diff > self.PRECISION:
-            self.opinions[node1] = value1 + self.cautiousness * (value2 - value1)
-            self.opinions[node2] = value2 + self.cautiousness * (value1 - value2)
-            print('node1 new: ' + str(self.opinions[node1]) + 'node2 new: ' + str(self.opinions[node2]))
-            return diff
-        elif diff < self.PRECISION:
-            return 0
+
+        if not np.isnan(value2):
+            diff = abs(value1 - value2)
+            if diff < self.confidence and diff > self.PRECISION:
+                self.opinions[node1] = value1 + self.cautiousness * (value2 - value1)
+                self.opinions[node2] = value2 + self.cautiousness * (value1 - value2)
+                return diff
+            elif diff < self.PRECISION:
+                return 0
+            else:
+                return -999
         else:
-            return False
+            return -999
 
     def preferential_adoption(self, node1):
         numeric_opinions = [x for x in self.opinions if np.isfinite(x)]
@@ -49,10 +52,8 @@ class DeffuantBarabasiModel:
             if sum_hist >= p:
                 new_opinion = (edges[index] + edges[index + 1]) / 2
                 self.opinions[node1] = new_opinion
-                # print('node1 new opinion: ' + str(self.opinions[node1]))
-                # new_opinions = np.append(self.opinions, new_opinion)
-                # self.set_opinion(new_opinions)
                 break
+        return -999
 
     def single_step(self):
         # pick node at random
@@ -60,12 +61,17 @@ class DeffuantBarabasiModel:
         value1 = self.opinions[node1]
         # check if the node have a non NA opinion
         if np.isnan(value1):
-            print('B: value1 ' + str(value1))
-            self.preferential_adoption(node1)
+            # print('B: value1 ' + str(value1))
+            return_value = self.preferential_adoption(node1)
         else:
-            print('DW: value1 ' + str(value1))
-            self.dw_interaction(node1)
-        print(self.get_unconverged_opinion())
+            # print('DW: value1 ' + str(value1))
+            return_value = self.dw_interaction(node1)
+        return return_value
+
+    def run(self, n_steps):
+        for i in range(n_steps):
+            self.single_step()
+
 
     def opinion_formation(self):
         # needs to be corrected, def.interaction is changed and called dw_interaction
@@ -75,7 +81,7 @@ class DeffuantBarabasiModel:
         idle_continuous_steps = True
 
         while not_convergence:
-            value = self.interaction() #here I will need to change to single step and do something about returned value
+            value = self.single_step() #here I will need to change to single step and do something about returned value
             if value > 0:
                 idle_continuous_steps = False
             elif value == 0:

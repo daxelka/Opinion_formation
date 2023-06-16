@@ -8,25 +8,28 @@ from utils import libs
 import math
 import random
 import json
+import scipy.stats
 
 # Allowing to use Latex in annotations
 plt.rc('text', usetex=True)
 
 # model parameters
 N_nodes: int = int(1e03)
-epsilon = 0.198
-gamma = 0.33
+epsilon = 0.115
+# epsilon = 0.5
+gamma = 0.14
 m = 0.01
-boundary_type = 'classic'
+# boundary_type = 'classic'
 
 # simulation parameters
 n_steps: int = int(4e06)
 # n_steps: int = int(80e06)
 
 # Plotting parameters
-N_sample = int(1e02)
-time_interval = int(10e03)
-start_point_recording = int(0.1e06)
+N_sample = int(5e02)
+time_interval = int(1e03)
+# time_interval = int(10e03)
+start_point_recording = int(0.1e04)
 end_point_recording = n_steps
 
 # Saving results parameter
@@ -40,7 +43,9 @@ initial_opinion_flat = tools.uniform_opinion(N_nodes, limits=(0.0, 1.0))
 
 rng = np.random.default_rng()
 initial_opinion_circular = rng.uniform(0, 2 * math.pi, (N_nodes,))
-# initial_opinion = initial_opinion_flat
+
+# initial_opinion_gaussian = two_gaussians(N_nodes, 0.3, 0.7, 0.1)
+# initial_opinion_circular = initial_opinion_gaussian * 2 * math.pi
 
 # Initiate the model
 # model = DeffuantModelSimple(N_nodes, confidence_interval=epsilon,

@@ -21,7 +21,7 @@ class DeffuantModelSimple:
         self.node_ids = range(self.N_nodes)
         self.converged = None
         self.jump_radius = jump_radius
-        self.jump_frequency = jump_frequency * 100
+        self.jump_frequency = jump_frequency
         self.rng = np.random.default_rng()
 
     def interaction(self):
@@ -54,9 +54,10 @@ class DeffuantModelSimple:
 
     def single_step(self):
         # take a probability of random jump
-        m = random.randint(1, 100)
+        # m = random.randint(1, 100)
+        m = random.random()
 
-        if m <= self.jump_frequency:
+        if m < self.jump_frequency:
             self.random_jump()
 
         else:

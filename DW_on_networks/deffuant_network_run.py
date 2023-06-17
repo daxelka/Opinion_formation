@@ -1,9 +1,6 @@
 import networkx as nx
-import time
-from ABM.deffuant_network_class import DeffuantModelNetwork
+from DW_on_networks.deffuant_network_class import DeffuantModelNetwork
 import distribution_tools as tools
-from distribution_tools import inverse_transform_sampling
-import numpy as np
 
 # Initiating a graph
 N_nodes: int = 100

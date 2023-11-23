@@ -1,6 +1,6 @@
 import networkx as nx
 import time
-from ABM.deffuant import DeffuantModel
+from ABM.HK.HK_class import HKModel
 from distribution_tools import inverse_transform_sampling
 import numpy as np
 
@@ -11,7 +11,7 @@ G = nx.gnp_random_graph(N_nodes, 0.3)
 
 # Initiating a Deffuant model on the graph
 t0 = time.perf_counter()
-model = DeffuantModel(G, 0.5, 0.5)
+model = HKModel(G, 0.5, 0.5)
 
 # Setting initial opinion
 # initial_opinion = normal_opinion(N_nodes, 0.1, 1, 0, 1)
@@ -31,7 +31,7 @@ model.show_opinion_distribution(initial_opinion)
 model.set_opinion(initial_opinion)
 
 # Run the model
-model.opinion_formation()
+model.run(1000)
 t1 = time.perf_counter()
 print('performance time:', t1 - t0)
 
@@ -40,7 +40,7 @@ densities = model.cluster_density(clusters)
 print('menas:', means)
 print('densities:',densities)
 
-
+#
 # Clusters in final opinion
 clusters, means = model.clusters_detector(model.get_opinion())
 print('Means of clusters:', means)

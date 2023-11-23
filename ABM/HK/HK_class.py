@@ -16,7 +16,7 @@ class HKModel:
         self.cautiousness = cautiousness  # convergence parameter, restricted to interval (0, 0.5]
         self.PRECISION = 0.01  # difference between opinions that are considered identical
         # clusters parameters
-        self.CLUSTER_PRECISION = 0.02  # difference in neighbouring opinions belonging to the same cluster
+        self.CLUSTER_PRECISION = 0.01  # difference in neighbouring opinions belonging to the same cluster
         self.CLUSTER_MAX_LENGTH = 0.1
         self.MINIMUM_DIFFERENCE = 0.01  # difference in opinion updating after which we consider that the opinion does not change
         # convergence parameters
@@ -25,11 +25,18 @@ class HKModel:
 
     def interaction(self):
         node = random.choice(self.nodes)
-        neighbors_within_radius = [n for n in self.G.neighbors(node) if
-                                   abs(self.G.nodes[node]['opinion'] - self.G.nodes[n]['opinion']) <= self.confidence]
-        selected_nodes = neighbors_within_radius + [node]
-        avg_opinion = sum(self.G.nodes[n]['opinion'] for n in selected_nodes) / len(selected_nodes)
-        diff = np.abs(self.G.nodes[node]['opinion'] - avg_opinion)
+        # neighbors_within_radius = [n for n in self.G.neighbors(node) if
+        #                            abs(self.G.nodes[node]['opinion'] - self.G.nodes[n]['opinion']) <= self.confidence]
+        # selected_nodes = neighbors_within_radius + [node]
+        # avg_opinion = sum(self.G.nodes[n]['opinion'] for n in selected_nodes) / len(selected_nodes)
+
+        node_opinion = self.G.nodes[node]['opinion']
+        opinions_neighbours_within_confidence = [self.G.nodes[n]['opinion'] for n in self.G.neighbors(node) if
+                                                abs(node_opinion- self.G.nodes[n]['opinion']) <= self.confidence]
+        selected_opinions = opinions_neighbours_within_confidence + [node_opinion]
+        avg_opinion = sum(selected_opinions ) / len(selected_opinions)
+
+        diff = np.abs(node_opinion - avg_opinion)
         self.G.nodes[node]['opinion'] = avg_opinion
         return diff
 

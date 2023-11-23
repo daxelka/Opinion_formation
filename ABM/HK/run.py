@@ -11,7 +11,7 @@ G = nx.gnp_random_graph(N_nodes, 0.3)
 
 # Initiating a Deffuant model on the graph
 t0 = time.perf_counter()
-model = HKModel(G, 0.5, 0.5)
+model = HKModel(G, 0.1, 0.5)
 
 # Setting initial opinion
 # initial_opinion = normal_opinion(N_nodes, 0.1, 1, 0, 1)
@@ -31,9 +31,11 @@ model.show_opinion_distribution(initial_opinion)
 model.set_opinion(initial_opinion)
 
 # Run the model
-model.run(1000)
+# model.run(1000)
+total_steps = model.opinion_formation()
+
 t1 = time.perf_counter()
-print('performance time:', t1 - t0)
+print('performance time:', t1 - t0, ' n_steps:', total_steps)
 
 clusters, means = model.clusters_detector(model.get_opinion())
 densities = model.cluster_density(clusters)

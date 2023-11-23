@@ -18,8 +18,9 @@ class HKModel:
         # clusters parameters
         self.CLUSTER_PRECISION = 0.02  # difference in neighbouring opinions belonging to the same cluster
         self.CLUSTER_MAX_LENGTH = 0.1
+        self.MINIMUM_DIFFERENCE = 0.01  # difference in opinion updating after which we consider that the opinion does not change
         # convergence parameters
-        self.MAXIMUM_STEPS = 5000000
+        self.MAXIMUM_STEPS = int(5e06)
         self.IDLE_STEPS = 100
 
     def interaction(self):
@@ -28,8 +29,9 @@ class HKModel:
                                    abs(self.G.nodes[node]['opinion'] - self.G.nodes[n]['opinion']) <= self.confidence]
         selected_nodes = neighbors_within_radius + [node]
         avg_opinion = sum(self.G.nodes[n]['opinion'] for n in selected_nodes) / len(selected_nodes)
+        diff = np.abs(self.G.nodes[node]['opinion'] - avg_opinion)
         self.G.nodes[node]['opinion'] = avg_opinion
-        return avg_opinion
+        return diff
 
 
     def one_step(self):
@@ -46,19 +48,19 @@ class HKModel:
         idle_continuous_steps = True
 
         while not_convergence:
-            value = self.interaction()
-            if value > 0:
-                idle_continuous_steps = False
-            elif value == 0:
+            diff = self.interaction()
+            if diff < self.MINIMUM_DIFFERENCE:
                 if idle_continuous_steps:  # check if the previous steps were idle too
                     n_idle_steps += 1
                 else:
                     idle_continuous_steps = True
                     n_idle_steps = 0
+            else:
+                idle_continuous_steps = False
 
             total_steps += 1
             not_convergence, n_idle_steps = self.is_not_convergence(n_idle_steps, total_steps)
-        return self.G
+        return total_steps
 
     def is_not_convergence(self, n_idle_steps, total_steps):
         if total_steps < self.MAXIMUM_STEPS:

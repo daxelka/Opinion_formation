@@ -13,14 +13,15 @@ plt.rc('text', usetex=True)
 
 # model parameters
 N_nodes: int = int(1e03)
-epsilon = 0.1
+epsilon = 0.3
 gamma = 0.05
 m = 0.1
 boundary_type = 'classic'
 
 
 # simulation parameters
-n_steps: int = int(80e06)
+n_steps: int = int(8e04)
+# n_steps: int = int(80e06)
 
 # Plotting parameters
 N_sample = int(1e02)

@@ -29,3 +29,11 @@ __pycache__/
 # images
 img/
 data/
+
+# Matlab data
+*.mat
+*.eps
+
+# Archives
+
+*.zip

@@ -10,7 +10,6 @@ class DeffuantModelNetwork:
         self.G = G
         self.N_nodes = len(G)
         self.edges = list(self.G.edges(data=False))
-        # self.opinions = []
         # Deffuant parameters
         self.confidence = confidence_interval  # restricted to interval (0, 0.5]
         self.cautiousness = cautiousness  # convergence parameter, restricted to interval (0, 0.5]
@@ -21,23 +20,17 @@ class DeffuantModelNetwork:
         # convergence parameters
         self.MAXIMUM_STEPS = int(1e8)
         self.IDLE_STEPS = 100
-        # self.node_ids = range(self.N_nodes)
         self.converged = None
         self.rng = np.random.default_rng()
 
     def interaction(self):
         # choosing two nodes for interaction at random
         edge = random.choice(self.edges)
-        # edge = random.sample(self.node_ids, 2)
         node1, node2 = edge
-        # value1 = self.opinions[node1]
-        # value2 = self.opinions[node2]
         value1 = self.G.nodes[node1]['opinion']
         value2 = self.G.nodes[node2]['opinion']
         diff = abs(value1 - value2)
         if diff < self.confidence and diff > self.PRECISION:
-            # self.opinions[node1] = value1 + self.cautiousness * (value2 - value1)
-            # self.opinions[node2] = value2 + self.cautiousness * (value1 - value2)
             self.G.nodes[node1]['opinion'] = value1 + self.cautiousness * (value2 - value1)
             self.G.nodes[node2]['opinion'] = value2 + self.cautiousness * (value1 - value2)
             return diff
@@ -50,9 +43,6 @@ class DeffuantModelNetwork:
     def single_step(self):
         self.interaction()
 
-    # def one_step(self):
-    #     self.interaction()
-    #     return self.opinions
 
     def run(self, n_steps):
         for i in range(n_steps):
